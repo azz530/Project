@@ -1,6 +1,6 @@
 <template>
   <div class="Home_page">
-    ss
+    ssss
   </div>
 </template>
 
