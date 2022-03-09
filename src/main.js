@@ -1,12 +1,15 @@
 import Vue from 'vue'
 import App from './App.vue'
+import requests from './api/request'
 import router from './router'
 import store from './store'
 import './plugins/element.js'
 import './style/global.css'
-import axios from 'axios'
+import './assets/iconfont/iconfont.css'
+import Video from 'video.js'
+import 'video.js/dist/video-js.css'
 
-Vue.prototype.$http = axios
+Vue.prototype.$http = requests;
 Vue.config.productionTip = false
 
 new Vue({

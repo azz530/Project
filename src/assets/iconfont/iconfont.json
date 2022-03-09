@@ -1,0 +1,107 @@
+{
+  "id": "3193576",
+  "name": "毕设",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "933636",
+      "name": "评价",
+      "font_class": "pingjia",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "3427892",
+      "name": "饼状图",
+      "font_class": "icon-",
+      "unicode": "e633",
+      "unicode_decimal": 58931
+    },
+    {
+      "icon_id": "5967396",
+      "name": "课程",
+      "font_class": "kecheng",
+      "unicode": "e66f",
+      "unicode_decimal": 58991
+    },
+    {
+      "icon_id": "6606729",
+      "name": "作业",
+      "font_class": "zuoye1",
+      "unicode": "e636",
+      "unicode_decimal": 58934
+    },
+    {
+      "icon_id": "6844448",
+      "name": "分析",
+      "font_class": "fenxi",
+      "unicode": "e63a",
+      "unicode_decimal": 58938
+    },
+    {
+      "icon_id": "7339831",
+      "name": "曲线图",
+      "font_class": "quxiantu",
+      "unicode": "e6a3",
+      "unicode_decimal": 59043
+    },
+    {
+      "icon_id": "2815741",
+      "name": "右箭头",
+      "font_class": "youjiantou",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "7964498",
+      "name": "课程管理",
+      "font_class": "kechengguanli",
+      "unicode": "e62f",
+      "unicode_decimal": 58927
+    },
+    {
+      "icon_id": "18497346",
+      "name": "选择",
+      "font_class": "xuanze",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "1447801",
+      "name": "作业",
+      "font_class": "zuoye",
+      "unicode": "e632",
+      "unicode_decimal": 58930
+    },
+    {
+      "icon_id": "2019094",
+      "name": "学生",
+      "font_class": "xuesheng",
+      "unicode": "e7c0",
+      "unicode_decimal": 59328
+    },
+    {
+      "icon_id": "6204762",
+      "name": "成绩录入",
+      "font_class": "chengjiluru",
+      "unicode": "e651",
+      "unicode_decimal": 58961
+    },
+    {
+      "icon_id": "10231670",
+      "name": "考勤",
+      "font_class": "kaoqin",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "1072934",
+      "name": "公告",
+      "font_class": "gonggao",
+      "unicode": "e650",
+      "unicode_decimal": 58960
+    }
+  ]
+}
