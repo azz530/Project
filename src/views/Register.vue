@@ -14,43 +14,17 @@
               <el-input v-model="register_form.username"></el-input>
             </el-form-item>
             <el-form-item label="密码" prop="password">
-              <el-input v-model="register_form.password"></el-input>
+              <el-input v-model="register_form.password" show-password></el-input>
             </el-form-item>
             <el-form-item label="确认密码" prop="confirm_password">
-              <el-input v-model="register_form.confirm_password"></el-input>
+              <el-input v-model="register_form.confirm_password" show-password></el-input>
             </el-form-item>
-            <el-form-item label="身份选择"  prop="identity">
+            <el-form-item label="身份选择" prop="identity">
               <el-select v-model="register_form.identity">
-                <el-option
-                  label="学生"
-                  value="student"
-                ></el-option>
-                <el-option
-                  label="访客"
-                  value="visitor"
-                ></el-option>
+                <el-option label="学生" value="student"></el-option>
+                <el-option label="家长" value="parents"></el-option>
               </el-select>
             </el-form-item>
-            <!-- <el-form-item label="班级" v-if="showClass" prop="classes">
-              <el-select v-model="register_form.classes">
-                <el-option
-                  label="一班"
-                  value="first"
-                ></el-option>
-                <el-option
-                  label="二班"
-                  value="seconde"
-                ></el-option>
-                <el-option
-                  label="三班"
-                  value="third"
-                ></el-option>
-                <el-option
-                  label="四班"
-                  value="fith"
-                ></el-option>
-              </el-select>
-            </el-form-item> -->
             <el-form-item>
               <el-button type="primary" @click="register">提交</el-button>
               <el-button type="info" @click="resRegForm">重置</el-button>
@@ -74,35 +48,17 @@ export default {
         callback();
       }
     };
-    // const validateName = (rule,value,callback) =>{
-    //   let reg = /^[+]{0,1}(\d+)$/g;
-    //   if(this.register_form.identity=="student"){
-    //     if(value===""){
-    //       callback(new Error("请输入学号"));
-    //     } else if(!reg.test(value)){
-    //       callback(new Error("只能输入数字"));
-    //     } else{
-    //       callback();
-    //     }
-    //   } else{
-    //     if(value===""){
-    //       callback(new Error("请输入用户名"));
-    //     } else{
-    //       callback();
-    //     }
-    //   }
-    // };
     return {
       register_form: {
         username: "",
         password: "",
         confirm_password: "",
         identity: "",
-        // classes:""
+        avatar:'',
       },
       register_rules: {
         username: [
-          {required:true,message:"请输入用户名",trigger:"blur"},
+          { required: true, message: "请输入用户名", trigger: "blur" },
         ],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
@@ -113,40 +69,37 @@ export default {
             trigger: "blur",
           },
         ],
-        confirm_password: [
-          { validator:validatePass2, trigger: "blur"},
-        ],
+        confirm_password: [{ validator: validatePass2, trigger: "blur" }],
       },
-      showClass:false,
+      showClass: false,
     };
   },
   methods: {
-    // getSelect(identity){
-    //   if(identity=="student"){
-    //     this.showClass = true;
-    //   } else{
-    //     this.showClass = false;
-    //   }
-    // },
     resRegForm() {
       this.$refs.register_reset.resetFields();
     },
     register() {
       console.log(this.register_form);
-      this.$refs.register_reset.validate(async(valid)=>{
-        if(!valid){
+      this.$refs.register_reset.validate(async (valid) => {
+        if (!valid) {
           return;
-        }else{
-          let {data:res} = await this.$http.post('api/reguser',this.register_form);
-          if(res.status !==200 ){
+        } else {
+          let { data: res } = await this.$http.post(
+            "api/reguser",
+            this.register_form
+          );
+          if (res.status !== 200) {
             this.$message.error("注册失败,请重试");
-          }else{
+          } else {
             this.$message.success("注册成功");
             this.$router.push("/login");
           }
         }
       });
     },
+    handleAvatarSuccess(){},
+    beforeAvatarUpload(){},
+    avatarUpload(){},
   },
 };
 </script>
@@ -166,7 +119,10 @@ export default {
       border-radius: 15px;
       span {
         display: block;
-        margin-bottom: 20px;
+        margin-bottom: 40px;
+        font-size: 30px;
+        color: rgba(77, 135, 243, 0.904);
+        font-style: oblique;
       }
       .el-form {
         margin-right: 20px;

@@ -4,7 +4,7 @@
       <i class="iconfont icon-youjiantou"></i>
     </div>
     <el-menu
-      background-color="#eaeaeb"
+      background-color="#f1eeee"
       text-color="#3a3e41"
       :unique-opened="true"
       :collapse="isCollapse"
@@ -64,22 +64,22 @@ export default {
         },
         {
           icon: "iconfont icon-kechengguanli",
-          name: "课程管理",
+          name: "班级管理",
           id: 2,
           children: [
             {
-              name: "课程选择",
-              path: "course_choose",
+              name: "班级学生",
+              path: "class_list",
               icon: "iconfont icon-xuanze",
             },
             {
-              name:"课程作业",
-              path:"course_work",
+              name:"班级公告",
+              path:"class_notice",
               icon:"iconfont icon-zuoye1",
             },
             {
-              name:"课程信息",
-              path:"course_information",
+              name:"班级信息",
+              path:"class_information",
               icon:"iconfont icon-kecheng",
             }
           ],
@@ -105,7 +105,22 @@ export default {
               icon:"iconfont icon-quxiantu",
             }
           ]
-        }
+        },
+        {
+          icon:"iconfont icon-fenxi",
+          name:"个人中心",
+          id:4,
+          children:[
+            {
+              name:"个人信息",
+              path:"userInfo"
+            },
+            {
+              name:"修改密码",
+              path:"changepsw"
+            }
+          ]
+        },
       ],
       isCollapse:false
     };
@@ -125,12 +140,14 @@ export default {
   padding: 0;
   .el-menu {
     border-right: none;
+    box-shadow: 4px 4px 10px rgba(59, 59, 59, 0.25);
     .iconfont {
       margin-right: 15px;
     }
   }
   .aside_btn{
     background-color: rgb(225, 228, 228);
+    box-shadow: 4px 4px 10px rgba(59, 59, 59, 0.25);
     text-align: center;
     color: black;
     cursor: pointer;

@@ -4,9 +4,11 @@ import Login from '../views/Login.vue'
 import Home from '../views/Home.vue'
 import Teacher from '../views/Teacher.vue'
 import Welcome from '../components/Welcome.vue'
-import StudentCheck from '../components/rightMain/StudentCheck.vue'
+import StudentCheck from '../components/Student/StudentCheck.vue'
 import Register from '../views/Register.vue'
-import StudentHWork from '../components/rightMain/StudentHWork.vue'
+import StudentHWork from '../components/Student/StudentHWork.vue'
+import StudentScore from '../components/Student/StudentScore.vue'
+import ClassList from '../components/Class/ClassList.vue'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
@@ -41,6 +43,11 @@ const router = new VueRouter({
         {
           path:'/student_homework',component:StudentHWork
         },
+        {
+          path:'/student_score',component:StudentScore
+        },{
+          path:'/class_list', component:ClassList
+        }
       ]
     }
   ]

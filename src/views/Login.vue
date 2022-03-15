@@ -1,68 +1,126 @@
 <template>
   <div class="login_page">
-    <div class="login_box">
-      <div class="user_avatar">
-          <img src="../assets/img/avatar.jpg" alt="">
-      </div>
-      <el-form class="login_form" :model="loginForm" :rules="login_rules" ref="login_reset">
-        <el-form-item class="login_user_name" prop="username">
-          <el-input prefix-icon="el-icon-user" v-model="loginForm.username"></el-input>
-        </el-form-item>
-        <el-form-item class="login_user_password" prop="password">
-          <el-input prefix-icon="el-icon-lock" v-model="loginForm.password" show-password></el-input>
-        </el-form-item>
-        <el-form-item class="login_btn">
-          <el-button type="primary" @click="login">登录</el-button>
-          <el-button type="info" @click="resetLoginForm">重置</el-button>
-          <router-link to="/register" class="reguser">去注册</router-link>
-        </el-form-item>
-      </el-form>
-    </div>
+    <el-row>
+      <el-col :span="6">
+        <el-card id="login_card">
+          <div class="text">
+            <span>欢迎登录</span>
+            <p>清风教学平台</p>
+          </div>
+          <el-form
+            :model="loginForm"
+            :rules="login_rules"
+            ref="login_reset"
+            label-width="65px"
+          >
+            <el-form-item label="用户名" prop="username">
+              <el-input
+                prefix-icon="el-icon-user"
+                v-model="loginForm.username"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="密码" prop="password">
+              <el-input
+                prefix-icon="el-icon-lock"
+                v-model="loginForm.password"
+                show-password
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="身份">
+              <el-select v-model="loginForm.identity">
+                <el-option label="管理员" value="admin"></el-option>
+                <el-option label="老师" value="teacher"></el-option>
+                <el-option label="学生" value="student"></el-option>
+                <el-option label="家长" value="parents"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <div class="login_btn">
+                <el-button type="primary" class="login" @click="login"
+                  >登录</el-button
+                >
+                <el-button type="info" class="reset" @click="resetLoginForm"
+                  >重置</el-button
+                >
+              </div>
+            </el-form-item>
+          </el-form>
+          <div class="tips">
+            <router-link to="/register" class="reguser">注册账号</router-link>
+            <router-link to="/register" class="lose">忘记密码</router-link>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
+import jwtDecode from 'jwt-decode'
 export default {
   data() {
     return {
-      loginForm:{
-        username: '',
-        password: ''
+      loginForm: {
+        username: "",
+        password: "",
+        identity: "",
       },
       //登录验证规则
-      login_rules:{
-        username:[
-          { required: true, message: '请输入用户名', trigger: 'blur' }
+      login_rules: {
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
         ],
-        password:[
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 8, max: 16, message: '长度在 8 到 16 个字符', trigger: 'blur' }
-        ]
-      }
-    }
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          {
+            min: 8,
+            max: 16,
+            message: "长度在 8 到 16 个字符",
+            trigger: "blur",
+          },
+        ],
+      },
+    };
   },
   methods: {
     resetLoginForm() {
       this.$refs.login_reset.resetFields();
     },
-    login() { //登录
-      this.$refs.login_reset.validate(async(valid)=>{
-        if(!valid) {
-          return ;
+    login() {
+      //登录
+      this.$refs.login_reset.validate(async (valid) => {
+        if (!valid) {
+          return;
         }
-        let {data:res} = await this.$http.post('api/login',this.loginForm); //发起登录请求,将接口返回数据解构赋值
-        if(res.status !==200 ){ //登录弹窗
-          this.$message.error('登录失败');
+        let { data: res } = await this.$http.post("api/login", this.loginForm); //发起登录请求,将接口返回数据解构赋值
+        if (res.status !== 200) {
+          //登录弹窗
+          this.$message.error("登录失败");
         } else {
-          this.$message.success('登录成功');
-          window.sessionStorage.setItem('token',res.token); //将token存储到sessionStorage
-          this.$router.push('/home');
+          this.$message.success("登录成功");
+
+          let token = res.token;
+          this.$store.commit("setToken", token);
+          this.$store.commit("setLoginStatus", true);
+
+          window.sessionStorage.setItem("token", res.token); //将token存储到sessionStorage
+          let userInfo = jwtDecode(res.token);
+          this.$store.commit('setUserInfo',{
+            username:userInfo.username,
+            id:userInfo.id,
+            identity:userInfo.identity,
+          });
+          if(userInfo.identity == 'teacher' || userInfo.identity == 'student'){
+            this.$router.push("/teacher");
+          } else if(userInfo.identity == 'parents') {
+            this.$router.push('/home');
+          }
+          
         }
-        //获取后端传的token 验证token进行登录   
-        
+        //获取后端传的token 验证token进行登录
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -70,48 +128,54 @@ export default {
 .login_page {
   background-image: url("../assets/img/login_bg.jpg");
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  .login_box {
-    height: 450px;
-    width: 600px;
-    background-color: rgb(228, 231, 233);
-    border-radius: 30px;
-    .user_avatar {
-      height: 150px;
-      width: 150px;
-      background-color: red;
-      border-radius: 50%;
-      position: absolute;
-      left: 50%;
-      margin-left: -75px;
-      img{
-          height: 150px;
-          width: 150px;
-          border-radius: 50%;
+  .el-row {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    .el-card {
+      height: 520px;
+      width: 450px;
+      border-top: 2px solid rgb(19, 145, 248);
+      border-radius: 20px;
+      .text {
+        font-size: 30px;
+        color: rgba(77, 135, 243, 0.904);
+        font-style: oblique;
+        padding-top: 20px;
       }
-    }
-    .login_form{
-        position: relative;
-        top: 40%;
-        .login_user_name{
-            width: 80%;
-            margin-left: 10%;
+      .el-form {
+        margin-top: 70px;
+        margin-right: 20px;
+        .el-select {
+          width: 100%;
         }
-        .login_user_password{
-            width: 80%;
-            margin-left: 10%;
+        .login_btn {
+          margin-top: 10px;
+          .login {
+            width: 100px;
+            margin-right: 80px;
+          }
+          .reset {
+            width: 100px;
+          }
         }
-        .login_btn{
-            margin-left: 40%;
-            margin-top: 5%;
-            .reguser{
-              text-decoration: none;
-              color: rgb(88, 119, 255);
-              margin-left: 20px;
-            }
+      }
+      .tips {
+        text-align: right;
+        margin-right: 20px;
+        .reguser {
+          color: rgb(48, 48, 253);
+          margin-right: 10px;
         }
+        .reguser:hover {
+          color: red;
+        }
+        .lose{
+          color: rgb(110, 110, 112);
+        }
+      }
     }
   }
 }

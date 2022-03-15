@@ -2,7 +2,7 @@
   <div class="container">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item>学生管理</el-breadcrumb-item>
-      <el-breadcrumb-item>学生作业</el-breadcrumb-item>
+      <el-breadcrumb-item>学生考勤</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card class="box-card">
       <el-dropdown split-button type="primary" @command="classChoose">
@@ -20,18 +20,22 @@
           <el-table-column label="姓名" prop="student_name" width="250px" align="center"></el-table-column>
           <el-table-column label="头像" prop="" width="250px" align="center"></el-table-column>
           <el-table-column label="班级" prop="classes" width="250px" align="center"></el-table-column>
-          <el-table-column label="作业" prop="" width="250px" align="center"></el-table-column>
-          <el-table-column label="操作" prop="" width="235px" align="center">
+          <el-table-column label="日期" prop="" width="250px" align="center"></el-table-column>
+          <el-table-column label="打卡状态" prop="" width="235px" align="center">
+            <template v-slot="scope">
+              <el-switch v-model="scope.row.student_check" @change="changeStdCheck(scope.row)">
+              </el-switch>
+            </template>
           </el-table-column>
       </el-table>
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="this.pageInfo.pageindex"
+        :current-page="pageInfo.pageNum"
         :page-sizes="[5,10]"
-        :page-size="this.pageInfo.pagesize"
+        :page-size="pageInfo.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="this.pageInfo.total">
+        :total="pageInfo.total">
       </el-pagination>
     </el-card>
   </div>
@@ -43,45 +47,51 @@ export default {
     return {
       classes: "班级选择",
       StdList: [],
-      AllStdList:[],
       pageInfo:{
-        pageindex:1,
-        pagesize:5,
+        pageNum:1,
+        pageSize:5,
         total:0
       },
-      chooseClass:"",
     };
   },
   created() {
     this.getStudentList();
   },
   methods: {
-    async getStudentList() {
-      const { data: res } = await this.$http.get("teacher/getStudentList");
-      if (res.status !== 200) {
-        return this.$message.error("获取学生列表失败");
-      } else{
-        this.AllStdList = res.data;
-        this.changePage();
-      }
+    getStudentList() {
+      this.$http.get("teacher/getStudentList",{
+        params:{
+          pageNum:this.pageInfo.pageNum,
+          pageSize:this.pageInfo.pageSize
+        }
+      }).then(({data:res})=>{
+        if (res.status !== 200) {
+          return this.$message.error("获取学生列表失败");
+        } else{
+          this.StdList = res.data;
+          this.pageInfo.total = res.total;
+        }
+      });
     },
-    async classChoose(command) {
-      let { data: res } = await this.$http.get("teacher/getClassStudentList", {
+    classChoose(command) {
+      this.$http.get("teacher/getClassStudentList", {
         params: {
           classes: command,
+          pageNum:this.pageInfo.pageNum,
+          pageSize:this.pageInfo.pageSize
         },
+      }).then(({data:res})=>{
+        if (res.status !== 200) {
+          return this.$message.error("获取学生信息失败");
+        } else {
+          this.StdList = res.data;
+          this.pageInfo.total = res.total;
+        }
       });
-      if (res.status !== 200) {
-        return this.$message.error("获取学生信息失败");
-      } else {
-        this.AllStdList = res.data;
-        this.changePage();
-      }
-      this.chooseClass = command;
     },
     //学生打卡状态改变
-    async changeStdCheck(userInfo) {
-      await this.$http.put('teacher/changeStdCheck',{ 
+    changeStdCheck(userInfo) {
+      this.$http.put('teacher/changeStdCheck',{ 
         student_id:userInfo.student_id,
         student_check:userInfo.student_check  
       }).then(res=>{
@@ -92,35 +102,15 @@ export default {
         }
       });
     },
-    changePage(){
-      this.pageInfo.total = this.AllStdList.length;
-      this.pageInfo.pageindex = 1;
-      this.pageInfo.pagesize = 5;
-      this.StdList = this.AllStdList.filter((item,index)=>{
-        return index < this.pageInfo.pagesize;
-      });
-    },
     //改变每页数据展示规格变化
     handleSizeChange(newSize){
-      this.pageInfo.pageindex = 1;
-      this.pageInfo.pagesize = newSize;
-      this.StdList = this.AllStdList.filter((item,index)=>{
-        return index < newSize;
-      });
+      this.pageInfo.pageSize = newSize;
+      this.getStudentList();
     },
     //改变当前页数据变化
     handleCurrentChange(newPage){
-      console.log(newPage);
-      let currentData = this.pageInfo.pagesize*(newPage-1);//下页数据的索引
-      let nextData = this.pageInfo.pagesize*newPage;//下页数据总数
-      let box = [];//中间容器
-      for(let i=currentData;i<nextData;i++){
-        if(this.AllStdList[i]){
-          box.push(this.AllStdList[i]);
-        }
-        this.StdList = box;
-      }
-      
+      this.pageInfo.pageNum = newPage;
+      this.getStudentList();
     },
   },
 };

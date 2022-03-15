@@ -8,6 +8,7 @@ import './style/global.css'
 import './assets/iconfont/iconfont.css'
 import Video from 'video.js'
 import 'video.js/dist/video-js.css'
+import './assets/css/global.css'
 
 Vue.prototype.$http = requests;
 Vue.config.productionTip = false

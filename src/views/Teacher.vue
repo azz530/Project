@@ -42,10 +42,10 @@ export default {
 .el-container {
   height: 100vh;
   .el-aside{
-    background-color: rgb(234, 234, 235);
+    background-color: rgb(241, 238, 238);
   }
   .el-main {
-    background-color: rgb(240, 240, 240);
+    background-color: rgb(255, 255, 255);
   }
 }
 </style>
