@@ -16,11 +16,11 @@
       </el-dropdown>
       <el-table border style="width: 100%" :data="StdList">
           <el-table-column type="index" label="序号" fixed width="100px" align="center"></el-table-column>
-          <el-table-column label="学号" prop="student_id" fixed width="250px" align="center"></el-table-column>
-          <el-table-column label="姓名" prop="student_name" width="250px" align="center"></el-table-column>
-          <el-table-column label="头像" prop="" width="250px" align="center"></el-table-column>
-          <el-table-column label="班级" prop="classes" width="250px" align="center"></el-table-column>
-          <el-table-column label="日期" prop="" width="250px" align="center"></el-table-column>
+          <el-table-column label="学号" prop="student_id" fixed  align="center"></el-table-column>
+          <el-table-column label="姓名" prop="student_name"  align="center"></el-table-column>
+          <el-table-column label="头像" prop=""  align="center"></el-table-column>
+          <el-table-column label="班级" prop="classes"  align="center"></el-table-column>
+          <el-table-column label="日期" prop="" align="center"></el-table-column>
           <el-table-column label="打卡状态" prop="" width="235px" align="center">
             <template v-slot="scope">
               <el-switch v-model="scope.row.student_check" @change="changeStdCheck(scope.row)">

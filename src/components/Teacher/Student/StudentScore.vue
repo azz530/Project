@@ -14,12 +14,12 @@
         </el-dropdown-menu>
       </el-dropdown>
       <el-table border style="width: 100%" :data="ScoreList">
-          <el-table-column type="index" label="序号" fixed width="100px" align="center"></el-table-column>
-          <el-table-column label="学号" prop="student_id" fixed width="250px" align="center"></el-table-column>
-          <el-table-column label="姓名" prop="student_name" width="250px" align="center"></el-table-column>
-          <el-table-column label="班级" prop="classes" width="250px" align="center"></el-table-column>
-          <el-table-column label="科目" prop="course_name" width="235px" align="center"></el-table-column>
-          <el-table-column label="成绩" prop="score" width="250px" align="center"></el-table-column>
+          <el-table-column type="index" label="序号" fixed  width="100px" align="center"></el-table-column>
+          <el-table-column label="学号" prop="student_id" fixed align="center"></el-table-column>
+          <el-table-column label="姓名" prop="student_name" align="center"></el-table-column>
+          <el-table-column label="班级" prop="classes" align="center"></el-table-column>
+          <el-table-column label="科目" prop="course_name" align="center"></el-table-column>
+          <el-table-column label="成绩" prop="score" align="center"></el-table-column>
           <el-table-column label="操作" prop="" width="250px" align="center"></el-table-column>
       </el-table>
       <el-pagination

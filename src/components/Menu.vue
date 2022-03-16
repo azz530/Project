@@ -1,0 +1,144 @@
+<template>
+  <div class="asideMenu_container">
+    <div class="aside_btn" @click="asideControll">
+      <i class="iconfont icon-youjiantou"></i>
+    </div>
+    <el-menu
+      background-color="#f1eeee"
+      text-color="#3a3e41"
+      :unique-opened="true"
+      :collapse="isCollapse"
+      :collapse-transition="false"
+      :router="true"
+    >
+      <el-submenu
+        :index="item.id + ''"
+        v-for="item in menu_items"
+        :key="item.id"
+      >
+        <template slot="title">
+          <i :class="item.icon"></i>
+          <span>{{ item.name }}</span>
+        </template>
+        <el-menu-item-group>
+          <el-menu-item
+            :index="citem.path"
+            v-for="citem in item.children"
+            :key="citem.id"
+          >
+            <i :class="citem.icon"></i>
+            <span>{{ citem.name }}</span>
+          </el-menu-item>
+        </el-menu-item-group>
+      </el-submenu>
+    </el-menu>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      menu_items: [
+        {
+          icon: "iconfont icon-xuesheng",
+          name: "学生管理",
+          id: 1,
+          children: [
+            {
+              name:'学生信息',
+              path:'admin_std'
+            }
+          ],
+        },
+        {
+          icon: "iconfont icon-kechengguanli",
+          name: "年级管理",
+          id: 2,
+          children: [
+            {
+              name:'年级信息',
+              path:'admin_grade'
+            }
+          ],
+        },
+        {
+          icon:"iconfont icon-fenxi",
+          name:"班级管理",
+          id:3,
+          children:[
+            {
+              name:'班级信息',
+              path:'admin_class'
+            }
+          ]
+        },
+        {
+          icon:"iconfont icon-fenxi",
+          name:"课程管理",
+          id:4,
+          children:[
+            {
+              name:'课程信息',
+              path:'admin_course'
+            }
+          ]
+        },
+        {
+          icon:"iconfont icon-fenxi",
+          name:"老师管理",
+          id:5,
+          children:[
+            {
+              name:'老师信息',
+              path:'admin_teacher'
+            }
+          ]
+        },
+        {
+          icon:"iconfont icon-fenxi",
+          name:"个人中心",
+          id:6,
+          children:[
+            {
+              name:"个人信息",
+              path:"adminInfo"
+            },
+          ]
+        },
+      ],
+      isCollapse:false
+    };
+  },
+  methods: {
+    asideControll(){
+      this.isCollapse = !this.isCollapse;
+      this.$emit("asideControll",this.isCollapse);
+    }
+  },
+};
+</script>
+
+<style lang="less" scoped>
+.asideMenu_container {
+  margin: 0;
+  padding: 0;
+  .el-menu {
+    border-right: none;
+    box-shadow: 4px 4px 10px rgba(59, 59, 59, 0.25);
+    .iconfont {
+      margin-right: 15px;
+    }
+  }
+  .aside_btn{
+    background-color: rgb(225, 228, 228);
+    box-shadow: 4px 4px 10px rgba(59, 59, 59, 0.25);
+    text-align: center;
+    color: black;
+    cursor: pointer;
+    .icon-youjiantou{
+      font-size: 24px;
+    }
+  }
+}
+</style>

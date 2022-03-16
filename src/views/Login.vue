@@ -114,6 +114,8 @@ export default {
             this.$router.push("/teacher");
           } else if(userInfo.identity == 'parents') {
             this.$router.push('/home');
+          } else if(userInfo.identity == 'admin') {
+            this.$router.push('/admin');
           }
           
         }

@@ -1,14 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Login from '../views/Login.vue'
-import Home from '../views/Home.vue'
-import Teacher from '../views/Teacher.vue'
-import Welcome from '../components/Welcome.vue'
-import StudentCheck from '../components/Student/StudentCheck.vue'
-import Register from '../views/Register.vue'
-import StudentHWork from '../components/Student/StudentHWork.vue'
-import StudentScore from '../components/Student/StudentScore.vue'
-import ClassList from '../components/Class/ClassList.vue'
+
 Vue.use(VueRouter)
 
 const router = new VueRouter({
@@ -19,34 +11,54 @@ const router = new VueRouter({
     },
     {
       path:'/login', 
-      component: Login
+      component: resolve => require(['../views/Login.vue'],resolve),
     },
     {
       path:'/register',
-      component:Register
+      component: resolve => require(['../views/Register.vue'],resolve),
     },
     {
       path:'/home',
-      component: Home
+      component: resolve => require(['../views/Home.vue'],resolve),
     },
     {
       path:'/teacher',
-      component: Teacher,
+      component: resolve => require(['../views/Teacher.vue'],resolve),
       redirect:'/welcome',
       children:[
         {
-          path:'/welcome',component:Welcome
+          path:'/welcome',component:resolve => require(['../components/Teacher/Welcome.vue'],resolve),
         },
         {
-          path:'/student_check',component:StudentCheck
+          path:'/student_check',component:resolve => require(['../components/Teacher/Student/StudentCheck.vue'],resolve),
         },
         {
-          path:'/student_homework',component:StudentHWork
+          path:'/student_homework',component:resolve => require(['../components/Teacher/Student/StudentHWork.vue'],resolve),
         },
         {
-          path:'/student_score',component:StudentScore
-        },{
-          path:'/class_list', component:ClassList
+          path:'/student_score',component:resolve => require(['../components/Teacher/Student/StudentScore.vue'],resolve),
+        },
+        {
+          path:'/class_list', component:resolve => require(['../components/Teacher/Class/ClassList.vue'],resolve),
+        },
+        {
+          path:'/class_notice',component:resolve => require(['../components/Teacher/Class/Notice.vue'],resolve),
+        }
+      ]
+    },
+    {
+      path:'/admin',
+      component: resolve => require(['../views/Admin.vue'],resolve),
+      redirect:'/admin_index',
+      children:[
+        {
+          path:'/admin_index',component:resolve => require(['../components/Admin/Index.vue'],resolve),
+        },
+        {
+          path:'/admin_std',component: resolve => require(['../components/Admin/StudentInfo.vue'],resolve),
+        },
+        {
+          path:'/admin_grade',component: resolve => require(['../components/Admin/Grade.vue'],resolve),
         }
       ]
     }

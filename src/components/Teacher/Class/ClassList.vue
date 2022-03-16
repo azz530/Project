@@ -17,37 +17,32 @@
           label="学号"
           prop="student_id"
           fixed
-          width="200px"
           align="center"
         ></el-table-column>
         <el-table-column
           label="姓名"
           prop="student_name"
-          width="200px"
           align="center"
         ></el-table-column>
-        <el-table-column label="性别" prop="sex" width="200px" align="center">
+        <el-table-column label="性别" prop="sex" align="center">
         </el-table-column>
         <el-table-column
           label="出生日期"
           prop="birthday"
-          width="186px"
           align="center"
         ></el-table-column>
         <el-table-column
           label="班级"
           prop="classes"
-          width="200px"
           align="center"
         ></el-table-column>
         <el-table-column
           label="家庭住址"
           prop="address"
-          width="350px"
           align="center"
         >
         </el-table-column>
-        <el-table-column label="操作" prop="" width="150px" align="center">
+        <el-table-column label="操作" prop="" width="200px" align="center">
           <template v-slot="scope">
             <el-tooltip
               class="item"
