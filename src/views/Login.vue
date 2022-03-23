@@ -109,10 +109,12 @@ export default {
             username:userInfo.username,
             id:userInfo.id,
             identity:userInfo.identity,
+            avatar:userInfo.avatar,
+            usersign:userInfo.usersign
           });
-          if(userInfo.identity == 'teacher' || userInfo.identity == 'student'){
+          if(userInfo.identity == 'teacher'){
             this.$router.push("/teacher");
-          } else if(userInfo.identity == 'parents') {
+          } else if(userInfo.identity == 'parents' || userInfo.identity == 'student') {
             this.$router.push('/home');
           } else if(userInfo.identity == 'admin') {
             this.$router.push('/admin');

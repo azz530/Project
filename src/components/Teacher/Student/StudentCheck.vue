@@ -19,7 +19,7 @@
           <el-table-column label="学号" prop="student_id" fixed  align="center"></el-table-column>
           <el-table-column label="姓名" prop="student_name"  align="center"></el-table-column>
           <el-table-column label="头像" prop=""  align="center"></el-table-column>
-          <el-table-column label="班级" prop="classes"  align="center"></el-table-column>
+          <el-table-column label="班级" prop="class_name"  align="center"></el-table-column>
           <el-table-column label="日期" prop="" align="center"></el-table-column>
           <el-table-column label="打卡状态" prop="" width="235px" align="center">
             <template v-slot="scope">

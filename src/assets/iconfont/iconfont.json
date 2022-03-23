@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "376365",
+      "name": "身份证",
+      "font_class": "cardid",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "924669",
+      "name": "地址",
+      "font_class": "dizhi",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "12437188",
+      "name": "生日",
+      "font_class": "shengrix",
+      "unicode": "e62e",
+      "unicode_decimal": 58926
+    },
+    {
       "icon_id": "933636",
       "name": "评价",
       "font_class": "pingjia",

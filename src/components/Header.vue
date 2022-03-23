@@ -1,11 +1,19 @@
 <template>
-  <div class="header_container">
-    <div class="header_icon">
-        <span>教学平台</span>
-    </div>
-    <div class="header_user">
-      <el-avatar src="../assets/img/avatar.png"></el-avatar>
-    </div>
+  <div class="page">
+    <el-row>
+      <el-col class="avatar">
+        <el-dropdown @command="handleCommand">
+          <el-avatar
+            :size="40"
+            :src="this.$store.state.userInfo.avatar"
+          ></el-avatar>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="userInfo">个人信息</el-dropdown-item>
+            <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -13,37 +21,61 @@
 export default {
   data() {
     return {
-      isLogin:false
-    }
+      isLogin: false,
+    };
   },
-  created(){
-
+  created() {},
+  methods: {
+    handleCommand(command) {
+      if (command === "userInfo") {
+        this.$router.push("/userInfo");
+      } else {
+        // window.sessionStorage.clear();全部清空
+        this.$confirm("是否要退出", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }).then((res) => {
+            if (res === "confirm") {
+              window.sessionStorage.removeItem("token");
+              window.sessionStorage.removeItem("state");
+              this.$router.push("/login");
+            }
+        }).catch((err) => err);
+      }
+    },
   },
-  methods:{
-    toLogin(){
-      this.$router.push('/login');
-    }
-  }
 };
 </script>
 
 <style lang="less" scoped>
-.header_container {
-  background: url("../assets/img/header_bg.jpg");
-  padding: 0;
+.page {
   margin: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  span {
-    font-size: 24px;
-    color: rgb(81, 174, 255);
-    margin-left: 100px;
-  }
-  .header_user {
-    display: flex;
-    align-items: center;
-    margin-right: 100px;
+  padding: 0;
+  .el-row {
+    height: 60px;
+    background: linear-gradient(
+      to bottom right,
+      rgb(245, 251, 255),
+      rgb(219, 233, 255)
+    );
+    .title {
+      height: 100%;
+      line-height: 60px;
+      text-align: center;
+      .tips {
+        font-size: 24px;
+        font-style: oblique;
+        color: rgba(77, 135, 243, 0.904);
+      }
+    }
+    .avatar {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: right;
+      padding-right: 2%;
+    }
   }
 }
 </style>

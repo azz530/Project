@@ -4,12 +4,12 @@
       <i class="iconfont icon-youjiantou"></i>
     </div>
     <el-menu
-      background-color="#f1eeee"
-      text-color="#3a3e41"
+      text-color="#0088ff"
       :unique-opened="true"
       :collapse="isCollapse"
       :collapse-transition="false"
       :router="true"
+      active-text-color="#0088ff"
     >
       <el-submenu
         :index="item.id + ''"
@@ -124,20 +124,27 @@ export default {
   margin: 0;
   padding: 0;
   .el-menu {
+    background: linear-gradient(to bottom right, rgb(224, 224, 224), rgb(200, 224, 255));
     border-right: none;
     box-shadow: 4px 4px 10px rgba(59, 59, 59, 0.25);
+    .el-menu-item{
+      padding: 0;
+      margin: 0;
+    }
     .iconfont {
       margin-right: 15px;
+      color:rgb(0, 136, 255);
     }
   }
   .aside_btn{
-    background-color: rgb(225, 228, 228);
+    background-color: rgb(217, 232, 248);
     box-shadow: 4px 4px 10px rgba(59, 59, 59, 0.25);
     text-align: center;
     color: black;
     cursor: pointer;
     .icon-youjiantou{
       font-size: 24px;
+      color: rgb(20, 156, 247);
     }
   }
 }

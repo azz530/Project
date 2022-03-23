@@ -27,12 +27,6 @@ export default {
     };
   },
   methods: {
-    // logout(){
-    // 退出登录 弹出窗口 清空sessionStorage 返回登录页面
-    //     window.sessionStorage.clear();全部清空
-    //     window.sessionStorage.removeItem('token');
-    //     this.$router.push('/login');
-    // }
   },
   components:{
     Banner,
@@ -47,6 +41,9 @@ export default {
 <style lang="less" scoped>
 .el-container {
   height: 100vh;
+  .el-header{
+    padding: 0;
+  }
   .el-main {
     padding: 0;
     margin: 0;

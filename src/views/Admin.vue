@@ -41,8 +41,13 @@ export default {
 <style lang="less" scoped>
 .el-container {
   height: 100vh;
+  .el-header{
+    padding: 0;
+  }
   .el-aside{
-    background-color: rgb(241, 238, 238);
+    background: linear-gradient(to bottom right, rgb(206, 232, 248), rgb(229, 236, 247));
+    padding: 0;
+    border-radius: 0 5px 10px 0;
   }
   .el-main {
     background-color: rgb(255, 255, 255);

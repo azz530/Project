@@ -58,9 +58,25 @@ const router = new VueRouter({
           path:'/admin_std',component: resolve => require(['../components/Admin/StudentInfo.vue'],resolve),
         },
         {
-          path:'/admin_grade',component: resolve => require(['../components/Admin/Grade.vue'],resolve),
-        }
+          path:'/admin_grade',component: resolve => require(['../components/Admin/GradeInfo.vue'],resolve),
+        },
+        {
+          path:'/admin_class',component: resolve => require(['../components/Admin/ClassInfo.vue'],resolve),
+        },
+        {
+          path:'/admin_course',component: resolve => require(['../components/Admin/CourseInfo.vue'],resolve),
+        },
+        {
+          path:'/admin_teacher',component: resolve => require(['../components/Admin/TeacherInfo.vue'],resolve),
+        },
+        {
+          path:'/adminInfo',component: resolve => require(['../components/Admin/AdminInfo.vue'],resolve),
+        },
       ]
+    },
+    {
+      path:'/userInfo',
+      component: resolve => require(['../views/UserInfo.vue'],resolve),
     }
   ]
 })
