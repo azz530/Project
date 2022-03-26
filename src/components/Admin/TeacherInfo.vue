@@ -286,7 +286,7 @@ export default {
           },
         })
         .then(({ data: res }) => {
-          if (res.meta.status !== 200) {
+          if (res.status !== 200) {
             return this.$message.error("获取教师列表失败");
           } else {
             this.TeacherList = res.data;
@@ -296,7 +296,7 @@ export default {
     },
     getCourse() {
       this.$http.get("admin/getCourse").then(({ data: res }) => {
-        if (res.meta.status !== 200) {
+        if (res.status !== 200) {
           return this.$message.error("获取课程信息失败");
         } else {
           this.CourseList = res.data;

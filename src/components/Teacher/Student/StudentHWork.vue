@@ -267,12 +267,12 @@ export default {
       this.$refs.addHWRef.resetFields();
     },
     addHW() {
-      this.isShow = false;
       this.$refs.addHWRef.validate((valid) => {
         if (valid) {
           this.$http
             .post("teacher/addHomeWork", this.HomeWorkForm)
             .then((res) => {
+              console.log(res);
               if (res.data.status != 200) {
                 if (res.data.status == 402) {
                   return this.$message.error("该作业号已存在");
@@ -281,6 +281,7 @@ export default {
               } else {
                 this.$message.success("新增作业成功");
                 this.getHomeWorkList();
+                this.isShow = false;
               }
             });
         } else {

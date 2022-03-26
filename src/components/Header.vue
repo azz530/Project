@@ -19,6 +19,7 @@
 
 <script>
 export default {
+  props:['avatar'],
   data() {
     return {
       isLogin: false,
@@ -28,7 +29,12 @@ export default {
   methods: {
     handleCommand(command) {
       if (command === "userInfo") {
-        this.$router.push("/userInfo");
+        if(this.$store.state.userInfo.identity==='student'||this.$store.state.userInfo.identity==='parents'){
+          this.$router.push("/userInfo");
+        } else if(this.$store.state.userInfo.identity==='admin'){
+          this.$router.push("/adminInfo");
+        }
+        
       } else {
         // window.sessionStorage.clear();全部清空
         this.$confirm("是否要退出", "提示", {
@@ -75,6 +81,9 @@ export default {
       align-items: center;
       justify-content: right;
       padding-right: 2%;
+      .el-avatar{
+        cursor: pointer;
+      }
     }
   }
 }

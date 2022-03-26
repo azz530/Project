@@ -4,7 +4,6 @@
       <Header></Header>
     </el-header>
     <el-main> 
-      <Nav></Nav>
       <div class="main_container"> 
         <Banner></Banner> 
         <SchoolRule></SchoolRule>
@@ -17,7 +16,6 @@
 
 <script>
 import Banner from '../components/Banner.vue'
-import Nav from '../components/Nav.vue'
 import Header from '../components/Header.vue'
 import SchoolRule from '../components/SchoolRule.vue'
 import Course from '../components/Course.vue'
@@ -30,7 +28,6 @@ export default {
   },
   components:{
     Banner,
-    Nav,
     Header,
     SchoolRule,
     Course

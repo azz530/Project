@@ -61,7 +61,7 @@ export default {
     getGradeList() {
       this.$http.get("admin/getGradeInfo").then(({ data: res }) => {
         console.log(res);
-        if (res.meta.status !== 200) {
+        if (res.status !== 200) {
           return this.$message.error("获取年级列表失败");
         } else {
           this.GradeList = res.data;

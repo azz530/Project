@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "7140573",
+      "name": "性别女",
+      "font_class": "xingbienv",
+      "unicode": "e642",
+      "unicode_decimal": 58946
+    },
+    {
+      "icon_id": "15644353",
+      "name": "男",
+      "font_class": "nan",
+      "unicode": "e6c4",
+      "unicode_decimal": 59076
+    },
+    {
       "icon_id": "376365",
       "name": "身份证",
       "font_class": "cardid",

@@ -108,7 +108,7 @@ export default {
         })
         .then(({ data: res }) => {
           console.log(res);
-          if (res.meta.status !== 200) {
+          if (res.status !== 200) {
             return this.$message.error("获取班级列表失败");
           } else {
             this.ClassList = res.data;

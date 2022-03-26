@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
+import store from '../store/index'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
@@ -49,11 +49,8 @@ const router = new VueRouter({
     {
       path:'/admin',
       component: resolve => require(['../views/Admin.vue'],resolve),
-      redirect:'/admin_index',
+      redirect:'/adminInfo',
       children:[
-        {
-          path:'/admin_index',component:resolve => require(['../components/Admin/Index.vue'],resolve),
-        },
         {
           path:'/admin_std',component: resolve => require(['../components/Admin/StudentInfo.vue'],resolve),
         },
@@ -93,6 +90,16 @@ router.beforeEach((to,from,next)=> {
   if(!tokenStr){
     return next('/login');
   } else {
+    if(to.path === '/admin' || to.path === '/adminInfo'){
+      // console.log(this.$store.userInfo.identity);
+      console.log(to);
+      // console.log(store.state.userInfo.identity);
+      if(store.state.userInfo.identity === 'admin'){
+        next();
+      } else {
+        return next('/home')
+      }
+    }
     next();
   }
 })
