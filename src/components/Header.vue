@@ -33,6 +33,8 @@ export default {
           this.$router.push("/userInfo");
         } else if(this.$store.state.userInfo.identity==='admin'){
           this.$router.push("/adminInfo");
+        } else if(this.$store.state.userInfo.identity === 'teacher') {
+          this.$router.push("/teacherInfo");
         }
         
       } else {

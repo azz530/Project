@@ -12,8 +12,9 @@ export default new Vuex.Store({
       username:'',
       id:'',
       identity:'',
+      identity_id:'',
       avatar:'',
-      usersign:''
+      usersign:'',
     }
   },
   mutations: {

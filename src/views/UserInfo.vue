@@ -16,6 +16,7 @@
                   @click.native="openWorkDetails(item.work_id)"
                 >
                   <el-card>
+                    <p class="course_name">科目:{{item.course_name}}</p>
                     <h4>{{ item.work_name }}</h4>
                     <p>期限:{{ item.work_deadline }}天</p>
                     <span
@@ -29,7 +30,7 @@
             </div>
           </el-card>
           <el-card class="notice">
-            <div class="noticeTitle">班级公告</div>
+            <div class="noticeTitle">老师通知</div>
             <div class="noticeContent">
               <el-timeline>
                 <el-timeline-item
@@ -55,7 +56,9 @@
         </el-row>
         <el-row>
           <el-card class="score">
-            <div class="text">学习成绩</div>
+            <div class="text">学习成绩
+              <Echarts :propData="StuendScorePropData" id="Test" class="student_score"></Echarts>
+            </div>
             
           </el-card>
         </el-row>
@@ -349,9 +352,11 @@
 
 <script>
 import Header from "../components/Header.vue";
+import Echarts from '../components/EchartsPic/Echarts.vue'
 export default {
   components: {
     Header,
+    Echarts
   },
   data() {
     const validateNum = (rule, value, callback) => {
@@ -431,12 +436,16 @@ export default {
       ShowUploadPic: true,
       noticeDialog:false,
       NoticeDetails:{},
+      StuendScorePropData:this.$EchartsOption.studentScoreBar(),
     };
   },
   created() {
     this.getUserInfo();
     this.getNotice();
     this.getHomeWork();
+  },
+  mounted(){
+    this.getScoreData();
   },
   beforeUpdate() {
     this.checkUserId();
@@ -479,6 +488,7 @@ export default {
           username: this.$store.state.userInfo.username,
           id: this.$store.state.userInfo.id,
           identity: this.$store.state.userInfo.identity,
+          identity_id: this.$store.state.userInfo.identity_id,
           avatar: this.userInfo.avatar,
           usersign: this.$store.state.userInfo.usersign,
         });
@@ -625,8 +635,9 @@ export default {
 
     getNotice() {
       this.$http
-        .get("my/getNotice", { params: { id: this.id } })
+        .get("my/getNotice", { params: { student_id: this.$store.state.userInfo.identity_id } })
         .then(({ data: res }) => {
+          console.log(res);
           if (res.status !== 200) {
             return this.$message.error("获取班级公告失败");
           } else {
@@ -636,10 +647,9 @@ export default {
     },
     getHomeWork() {
       this.$http
-        .get("my/getHomeWork", { params: { id: this.id } })
+        .get("my/getHomeWork", { params: { student_id: this.$store.state.userInfo.identity_id } })
         .then(({ data: res }) => {
           if (res.status !== 200) {
-            console.log(res);
             return this.$message.error("获取作业信息失败");
           } else {
             this.HomeWorkList = res.data;
@@ -680,7 +690,6 @@ export default {
 
       // console.log(work);
       this.$http.post("my/commitHomeWork", work).then(({ data: res }) => {
-        console.log(res);
         if (res.status !== 200) {
           return this.$message.error("提交作业失败");
         } else {
@@ -712,7 +721,23 @@ export default {
     openNoticeDetails(data){
       this.noticeDialog = true;
       this.NoticeDetails = data;
-    }
+    },
+    getScoreData(){  
+      this.$http.get('my/getScoreData',{params:{student_id:this.$store.state.userInfo.identity_id}}).then(({data:res})=>{
+        if(res.status !== 200){
+          return this.$message.error('获取成绩信息失败');
+        } else {
+          const courseArr = res.data.map((item)=>{
+            return item.course_name;
+          })
+          const scoreArr = res.data.map((item)=>{
+            return item.score;
+          })
+          this.StuendScorePropData.xAxis.data = courseArr;
+          this.StuendScorePropData.series[0].data = scoreArr;
+        }
+      })
+    },
   },
 };
 </script>
@@ -727,12 +752,9 @@ export default {
     .userMessage-card {
       margin-top: 20px;
       margin-left: 20px;
-      max-width: 76vw;
-      min-width: 73vw;
-      height: 90vh;
       display: flex;
       .homework {
-        width: 350px;
+        width: 450px;
         max-height: 430px;
         cursor: pointer;
         .homeworkTitle {
@@ -744,6 +766,13 @@ export default {
           .el-card {
             min-height: 70px;
             position: relative;
+            .course_name{
+              font-size: 14px;
+              position: absolute;
+              left: 4px;
+              top: 4px;
+              color: rgb(66, 66, 248);
+            }
             p {
               position: absolute;
               right: 4px;
@@ -802,6 +831,10 @@ export default {
       }
       .score{
         margin-top: 30px;
+        .student_score{
+          width: 100%;
+          height: 600px;
+        }
       }
     }
     .userInfo-card {
@@ -809,7 +842,7 @@ export default {
       height: 60vh;
       margin-top: 20px;
       margin-left: 30px;
-      position: absolute;
+      position: fixed;
       right: 20px;
       .el-icon-setting {
         cursor: pointer;

@@ -1,12 +1,12 @@
 <template>
   <div class="container">
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item>课程管理</el-breadcrumb-item>
-      <el-breadcrumb-item>课程信息</el-breadcrumb-item>
+      <el-breadcrumb-item>老师管理</el-breadcrumb-item>
+      <el-breadcrumb-item>老师信息</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card class="box-card">
-      <el-button type="primary" @click="addCourse"> 新增课程 </el-button>
-      <el-table border style="width: 100%" :data="CourseList">
+      <el-button type="primary" @click="addTeacher"> 添加老师 </el-button>
+      <el-table border style="width: 100%" :data="TeacherList">
         <el-table-column
           type="index"
           label="序号"
@@ -15,20 +15,27 @@
           align="center"
         ></el-table-column>
         <el-table-column
-          label="课程号"
-          prop="course_id"
+          label="工号"
+          prop="teacher_id"
           fixed
           align="center"
         ></el-table-column>
         <el-table-column
-          label="课程名称"
+          label="姓名"
+          prop="teacher_name"
+          fixed
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          label="性别"
+          prop="sex"
+          fixed
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          label="教学科目"
           prop="course_name"
           fixed
-          align="center"
-        ></el-table-column>
-        <el-table-column
-          label="任课老师"
-          prop="teacher_name"
           align="center"
         ></el-table-column>
         <el-table-column label="操作" prop="" width="250px" align="center">
@@ -43,7 +50,7 @@
               <el-button
                 type="primary"
                 icon="el-icon-edit"
-                @click="editCourse(scope.row)"
+                @click="editTeacher(scope.row)"
               ></el-button>
             </el-tooltip>
             <el-tooltip
@@ -56,7 +63,7 @@
               <el-button
                 type="danger"
                 icon="el-icon-delete"
-                @click="deleteCourse(scope.row.course_id)"
+                @click="deleteTeacher(scope.row.teacher_id)"
               ></el-button>
             </el-tooltip>
           </template>
@@ -80,20 +87,30 @@
       width="50%"
       @close="closeAddDialog"
     >
-      <el-form :model="addCourseForm" :rules="CourseFormRules" ref="addRef">
-        <el-form-item label="课程号" label-width="80px" prop="course_id">
-          <el-input v-model="addCourseForm.course_id"></el-input>
+      <el-form
+        :model="addTeacherForm"
+        :rules="TeacherFormRules"
+        ref="addTeacherRef"
+      >
+        <el-form-item label="工号" label-width="80px" prop="teacher_id">
+          <el-input v-model="addTeacherForm.teacher_id"></el-input>
         </el-form-item>
-        <el-form-item label="课程名称" label-width="80px" prop="course_name">
-          <el-input v-model="addCourseForm.course_name"></el-input>
+        <el-form-item label="姓名" label-width="80px" prop="teacher_name">
+          <el-input v-model="addTeacherForm.teacher_name"></el-input>
         </el-form-item>
-        <el-form-item label="任课老师" label-width="80px" prop="teacher_id">
-          <el-select v-model="addCourseForm.teacher_id">
+        <el-form-item label="性别" label-width="80px" prop="sex">
+          <el-select v-model="addTeacherForm.sex">
+            <el-option label="男" value="男"></el-option>
+            <el-option label="女" value="女"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="科目" label-width="80px" prop="course_name">
+          <el-select v-model="addTeacherForm.course_name">
             <el-option
-              v-for="item in TeacherList"
-              :key="item.teacher_id"
-              :label="item.teacher_name"
-              :value="item.teacher_id"
+              v-for="item in CourseList"
+              :key="item.course_id"
+              :label="item.course_name"
+              :value="item.course_name"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -112,23 +129,29 @@
     >
       <el-form
         :model="editForm"
-        :rules="CourseFormRules"
+        :rules="TeacherFormRules"
         label-width="50px"
         ref="editRef"
       >
-        <el-form-item label="课程号" label-width="80px">
-          <el-input v-model="editForm.course_id" disabled></el-input>
+        <el-form-item label="工号" label-width="80px">
+          <el-input v-model="editForm.teacher_id" disabled></el-input>
         </el-form-item>
-        <el-form-item label="课程名" label-width="80px" prop="course_name">
-          <el-input v-model="editForm.course_name"></el-input>
+        <el-form-item label="姓名" label-width="80px" prop="teacher_name">
+          <el-input v-model="editForm.teacher_name"></el-input>
         </el-form-item>
-        <el-form-item label="任课老师" label-width="80px" prop="teacher_id">
-          <el-select v-model="editForm.teacher_id">
+        <el-form-item label="性别" label-width="80px" prop="sex">
+          <el-select v-model="editForm.sex">
+            <el-option label="男" value="男"></el-option>
+            <el-option label="女" value="女"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="科目" label-width="80px" prop="course_name">
+          <el-select v-model="editForm.course_name">
             <el-option
-              v-for="item in TeacherList"
-              :key="item.teacher_id"
-              :label="item.teacher_name"
-              :value="item.teacher_id"
+              v-for="item in CourseList"
+              :key="item.course_id"
+              :label="item.course_name"
+              :value="item.course_name"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -155,6 +178,7 @@ export default {
       }
     };
     return {
+      TeacherList: [],
       CourseList: [],
       pageInfo: {
         pageNum: 1,
@@ -162,54 +186,62 @@ export default {
         total: 0,
       },
       addDialog: false,
-      editDialog: false,
-      addCourseForm: {
-        course_id: "",
-        course_name: "",
+      addTeacherForm: {
         teacher_id: "",
+        teacher_name: "",
+        sex: "",
+        grade_name: "",
+        class_name: "",
+        course_name: "",
       },
-      CourseFormRules: {
-        course_id: [
+      TeacherFormRules: {
+        teacher_id: [
           { required: true, validator: validateNum, trigger: "blur" },
           { min: 6, max: 10, message: "6 到 10 个数字组合", trigger: "blur" },
         ],
-        course_name: [
-          { required: true, message: "请输入课程名称", trigger: "blur" },
+        teacher_name: [
+          { required: true, message: "姓名必填", trigger: "blur" },
         ],
-        teacher_id: [
+        sex: [
           {
             required: true,
-            message: "选择任课老师",
+            message: "选择性别",
+            trigger: ["change", "blur"],
+            type: "string",
+          },
+        ],
+        grade_name: [
+          {
+            required: true,
+            message: "请选择年级",
+            trigger: ["change", "blur"],
+          },
+        ],
+        class_name: [
+          {
+            required: true,
+            message: "请选择班级",
+            trigger: ["change", "blur"],
+          },
+        ],
+        course_name: [
+          {
+            required: true,
+            message: "请选择科目",
             trigger: ["change", "blur"],
           },
         ],
       },
-      TeacherList: [],
-      editForm: {},
+      editDialog:false,
+      editForm:{},
     };
   },
   created() {
-    this.getCourseList();
+    this.getTeacherList();
   },
   methods: {
-    getCourseList() {
-      this.$http
-        .get("admin/getCourseInfo", {
-          params: {
-            pageNum: this.pageInfo.pageNum,
-            pageSize: this.pageInfo.pageSize,
-          },
-        })
-        .then(({ data: res }) => {
-          if (res.status !== 200) {
-            return this.$message.error("获取学生列表失败");
-          } else {
-            this.CourseList = res.data;
-            this.pageInfo.total = res.total;
-          }
-        });
-    },
-    getTeacherInfo() {
+    addTeacher() {},
+    getTeacherList() {
       this.$http
         .get("admin/getTeacherInfo", {
           params: {
@@ -226,90 +258,96 @@ export default {
           }
         });
     },
+    getCourse() {
+      this.$http.get("admin/getCourse").then(({ data: res }) => {
+        if (res.status !== 200) {
+          return this.$message.error("获取课程信息失败");
+        } else {
+          this.CourseList = res.data;
+        }
+      });
+    },
     //改变每页数据展示规格变化
     handleSizeChange(newSize) {
       this.pageInfo.pageSize = newSize;
-      this.getCourseList();
+      this.getTeacherList();
     },
     //改变当前页数据变化
     handleCurrentChange(newPage) {
       this.pageInfo.pageNum = newPage;
-      this.getCourseList();
+      this.getTeacherList();
     },
-    addCourse() {
+    addTeacher() {
       this.addDialog = true;
-      this.getTeacherInfo();
+      this.getCourse();
     },
     closeAddDialog() {
-      this.$refs.addRef.resetFields();
+      this.$refs.addTeacherRef.resetFields();
     },
     commitAddForm() {
-      this.$refs.addRef.validate((valid) => {
+      this.$refs.addTeacherRef.validate((valid) => {
         if (valid) {
           this.$http
-            .post("admin/addCourse", this.addCourseForm)
-            .then(({ data: res }) => {
-              if (res.status !== 200) {
-                if (res.status === 402) {
-                  return this.$message.error("该课程号已被使用");
+            .post("admin/addTeacher", this.addTeacherForm)
+            .then((res) => {
+              if (res.data.status !== 200) {
+                if (res.data.status === 402) {
+                  return this.$message.error("该工号已被使用");
                 }
-                return this.$message.error("新增课程失败");
+                return this.$message.error("新增失败");
               } else {
-                this.$message.success("新增课程成功");
-                this.getCourseList();
+                this.$message.success("新增成功");
+                this.getTeacherList();
                 this.addDialog = false;
               }
             });
         }
       });
     },
-    editCourse(data) {
+    editTeacher(data) {
       this.editDialog = true;
       this.editForm = data;
-      this.getTeacherInfo();
+      this.getCourse();
     },
-    closeEditDialog() {
+    closeEditDialog(){
       this.$refs.editRef.resetFields();
     },
-    commitEditForm() {
-      this.$refs.editRef.validate((valid) => {
-        if (valid) {
-          this.$http
-            .put("admin/changeCourseInfo", this.editForm)
-            .then(({ data: res }) => {
-              if (res.status !== 200) {
-                return this.$message.error("修改失败");
-              } else {
-                this.$message.success("修改成功");
-                this.getCourseList();
-                this.editDialog = false;
-              }
-            });
+    commitEditForm(){
+      this.$refs.editRef.validate((valid)=>{
+        if(valid) {
+          this.$http.put('admin/changeTeacherInfo',this.editForm).then(res=>{
+            console.log(res);
+            if(res.status !== 200){
+              return this.$message.error('修改失败');
+            } else {
+              this.$message.success('修改成功');
+              this.getTeacherList();
+              this.editDialog = false;
+            }
+          })
         }
-      });
+      })
     },
-    deleteCourse(id) {
-      this.$confirm("是否删除该课程", "提示", {
+    deleteTeacher(id){
+      this.$confirm("是否删除该老师", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-      })
-        .then((res) => {
+      }).then((res) => {
           if (res === "confirm") {
             this.$http
-              .delete("admin/delCourse", { params: { course_id: id } })
+              .delete("admin/delTeacher", { params: { teacher_id: id } })
               .then((res) => {
                 if (res.status != 200) {
                   this.$message.error("删除失败");
                 } else {
                   this.$message.success("删除成功");
                 }
-                this.getCourseList();
+                this.getTeacherList();
               });
           }
-        })
-        .catch((err) => err);
-    },
+      }).catch((err) => err);
+    }
   },
 };
 </script>

@@ -20,12 +20,6 @@
           align="center"
         ></el-table-column>
         <el-table-column
-          label="年级"
-          prop="grade_name"
-          fixed
-          align="center"
-        ></el-table-column>
-        <el-table-column
           label="班级学生人数"
           prop="student_num"
           align="center"
@@ -41,14 +35,14 @@
             <el-tooltip
               class="item"
               effect="dark"
-              content="编辑班级信息"
+              content="查看班级信息"
               placement="top"
               :enterable="false"
             >
               <el-button
                 type="primary"
-                icon="el-icon-edit"
-                @click="editClassInfo(scope.row)"
+                icon="el-icon-search"
+                @click="checkClassInfo(scope.row.class_id)"
               ></el-button>
             </el-tooltip>
           </template>
@@ -68,15 +62,47 @@
     </el-card>
 
     <el-dialog
-      title="编辑班级信息"
-      :visible.sync="editDialog"
+      title="班级信息"
+      :visible.sync="checkDialog"
       width="50%"
-      @close="closeEditDialog"
+      @close="closeCheckDialog"
     >
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="commitEditForm">确 定</el-button>
-        <el-button @click="editDialog = false">取 消</el-button>
-      </div>
+      <el-card class="box-card">
+        <el-table border style="width: 100%" :data="ClassStdList">
+          <el-table-column
+            type="index"
+            label="序号"
+            fixed
+            width="150px"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="学号"
+            prop="student_id"
+            fixed
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="姓名"
+            prop="student_name"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="性别"
+            prop="sex"
+            align="center"
+          ></el-table-column>
+        </el-table>
+
+        <el-pagination
+          @current-change="handleCurrentChange"
+          :current-page="smallPageInfo.currentPage"
+          small
+          layout="prev, pager, next"
+          :total="smallPageInfo.total"
+        >
+        </el-pagination>
+      </el-card>
     </el-dialog>
   </div>
 </template>
@@ -88,10 +114,18 @@ export default {
       ClassList: [],
       pageInfo: {
         pageNum: 1,
-        pageSize: 4,
+        pageSize: 6,
         total: 0,
       },
-      editDialog:false,
+      checkDialog: false,
+      ClassStdList: [],
+      classStdTotal: null,
+      smallPageInfo: {
+        currentPage: 1,
+        pageSize: 6,
+        total: 0,
+      },
+      class_id:null,
     };
   },
   created() {
@@ -107,7 +141,6 @@ export default {
           },
         })
         .then(({ data: res }) => {
-          console.log(res);
           if (res.status !== 200) {
             return this.$message.error("获取班级列表失败");
           } else {
@@ -116,7 +149,6 @@ export default {
           }
         });
     },
-
     //改变每页数据展示规格变化
     handleSizeChange(newSize) {
       this.pageInfo.pageSize = newSize;
@@ -127,14 +159,36 @@ export default {
       this.pageInfo.pageNum = newPage;
       this.getClassList();
     },
-    closeEditDialog(){
-      this.$refs.editRef.resetFields();
+    closeCheckDialog() {
+      this.checkDialog = false;
     },
-    commitEditForm(){
-
+    checkClassInfo(id) {
+      this.checkDialog = true;
+      this.class_id = id;
+      this.getClassStd(id);
     },
-    editClassInfo() {
-      this.editDialog = true;
+    getClassStd(class_id) {
+      this.$http
+        .get("admin/getClassStd", {
+          params: {
+            pageNum: this.smallPageInfo.currentPage,
+            pageSize: this.smallPageInfo.pageSize,
+            class_id: class_id,
+          },
+        })
+        .then(({ data: res }) => {
+          console.log(res);
+          if (res.status !== 200) {
+            return this.$message.error("获取班级学生失败");
+          } else {
+            this.ClassStdList = res.data;
+            this.smallPageInfo.total = res.total;
+          }
+        });
+    },
+    handleCurrentChange(page) {
+      this.smallPageInfo.currentPage = page;
+      this.getClassStd(this.class_id);
     },
   },
 };

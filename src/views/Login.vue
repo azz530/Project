@@ -109,6 +109,7 @@ export default {
             username:userInfo.username,
             id:userInfo.id,
             identity:userInfo.identity,
+            identity_id:userInfo.identity_id,
             avatar:userInfo.avatar,
             usersign:userInfo.usersign
           });

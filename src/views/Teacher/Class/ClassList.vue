@@ -1,7 +1,6 @@
 <template>
   <div class="container">
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item>班级管理</el-breadcrumb-item>
       <el-breadcrumb-item>班级学生</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card class="box-card">
@@ -33,7 +32,7 @@
         ></el-table-column>
         <el-table-column
           label="班级"
-          prop="classes"
+          prop="class_name"
           align="center"
         ></el-table-column>
         <el-table-column
@@ -114,14 +113,6 @@
           >
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="班级" label-width="80px" prop="classes">
-          <el-select v-model="editForm.classes">
-            <el-option label="一班" value="一班"></el-option>
-            <el-option label="二班" value="二班"></el-option>
-            <el-option label="三班" value="三班"></el-option>
-            <el-option label="四班" value="四班"></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="家庭住址" label-width="80px" prop="address">
           <el-input
             type="textarea"
@@ -159,7 +150,6 @@ export default {
         birthday: [
           { required: true, message: "请选择出生日期", trigger: "blur" },
         ],
-        classes: [{ required: true, message: "请选择班级", trigger: "change" }],
         address: [
           { required: true, message: "请输入家庭地址", trigger: "blur" },
         ],
@@ -176,6 +166,7 @@ export default {
           params: {
             pageNum: this.pageInfo.pageNum,
             pageSize: this.pageInfo.pageSize,
+            teacher_id:this.$store.state.userInfo.identity_id,
           },
         })
         .then(({ data: res }) => {

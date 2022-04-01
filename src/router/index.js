@@ -24,26 +24,29 @@ const router = new VueRouter({
     {
       path:'/teacher',
       component: resolve => require(['../views/Teacher.vue'],resolve),
-      redirect:'/welcome',
+      redirect:'/teacherInfo',
       children:[
         {
-          path:'/welcome',component:resolve => require(['../components/Teacher/Welcome.vue'],resolve),
+          path:'/teacherInfo',component:resolve => require(['../views/Teacher/TeacherIndex.vue'],resolve),
         },
         {
-          path:'/student_check',component:resolve => require(['../components/Teacher/Student/StudentCheck.vue'],resolve),
+          path:'/student_check',component:resolve => require(['../views/Teacher/Student/StudentCheck.vue'],resolve),
         },
         {
-          path:'/student_homework',component:resolve => require(['../components/Teacher/Student/StudentHWork.vue'],resolve),
+          path:'/student_homework',component:resolve => require(['../views/Teacher/Student/StudentHWork.vue'],resolve),
         },
         {
-          path:'/student_score',component:resolve => require(['../components/Teacher/Student/StudentScore.vue'],resolve),
+          path:'/student_score',component:resolve => require(['../views/Teacher/Student/StudentScore.vue'],resolve),
         },
         {
-          path:'/class_list', component:resolve => require(['../components/Teacher/Class/ClassList.vue'],resolve),
+          path:'/class_list', component:resolve => require(['../views/Teacher/Class/ClassList.vue'],resolve),
         },
         {
-          path:'/class_notice',component:resolve => require(['../components/Teacher/Class/Notice.vue'],resolve),
-        }
+          path:'/class_notice',component:resolve => require(['../views/Teacher/Class/Notice.vue'],resolve),
+        },
+        {
+          path:'/scoreAnalyse',component:resolve => require(['../views/Teacher/Score/ScoreAnalyse.vue'],resolve),
+        },
       ]
     },
     {
@@ -52,22 +55,22 @@ const router = new VueRouter({
       redirect:'/adminInfo',
       children:[
         {
-          path:'/admin_std',component: resolve => require(['../components/Admin/StudentInfo.vue'],resolve),
+          path:'/admin_std',component: resolve => require(['../views/Admin/StudentInfo.vue'],resolve),
         },
         {
-          path:'/admin_grade',component: resolve => require(['../components/Admin/GradeInfo.vue'],resolve),
+          path:'/admin_grade',component: resolve => require(['../views/Admin/GradeInfo.vue'],resolve),
         },
         {
-          path:'/admin_class',component: resolve => require(['../components/Admin/ClassInfo.vue'],resolve),
+          path:'/admin_class',component: resolve => require(['../views/Admin/ClassInfo.vue'],resolve),
         },
         {
-          path:'/admin_course',component: resolve => require(['../components/Admin/CourseInfo.vue'],resolve),
+          path:'/admin_course',component: resolve => require(['../views/Admin/CourseInfo.vue'],resolve),
         },
         {
-          path:'/admin_teacher',component: resolve => require(['../components/Admin/TeacherInfo.vue'],resolve),
+          path:'/admin_teacher',component: resolve => require(['../views/Admin/TeacherInfo.vue'],resolve),
         },
         {
-          path:'/adminInfo',component: resolve => require(['../components/Admin/AdminInfo.vue'],resolve),
+          path:'/adminInfo',component: resolve => require(['../views/Admin/AdminIndex.vue'],resolve),
         },
       ]
     },

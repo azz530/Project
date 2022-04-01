@@ -1,24 +1,20 @@
 <template>
   <div class="container">
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item>学生管理</el-breadcrumb-item>
       <el-breadcrumb-item>学生考勤</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card class="box-card">
       <el-dropdown split-button type="primary" @command="classChoose">
         {{ classes }}
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="一班">一班</el-dropdown-item>
-          <el-dropdown-item command="二班">二班</el-dropdown-item>
-          <el-dropdown-item command="三班">三班</el-dropdown-item>
-          <el-dropdown-item command="四班">四班</el-dropdown-item>
+          <el-dropdown-item v-for="item in classArr" :key="item.class_id" :command="item.class_id">{{item.class_name}}</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
       <el-table border style="width: 100%" :data="StdList">
           <el-table-column type="index" label="序号" fixed width="100px" align="center"></el-table-column>
           <el-table-column label="学号" prop="student_id" fixed  align="center"></el-table-column>
           <el-table-column label="姓名" prop="student_name"  align="center"></el-table-column>
-          <el-table-column label="头像" prop=""  align="center"></el-table-column>
+          <el-table-column label="性别" prop="sex"  align="center"></el-table-column>
           <el-table-column label="班级" prop="class_name"  align="center"></el-table-column>
           <el-table-column label="日期" prop="" align="center"></el-table-column>
           <el-table-column label="打卡状态" prop="" width="235px" align="center">
@@ -52,17 +48,30 @@ export default {
         pageSize:5,
         total:0
       },
+      classArr:[],
     };
   },
   created() {
     this.getStudentList();
+    this.getClass();
   },
   methods: {
+    getClass(){
+      this.$http.get('teacher/getClass',{params:{teacher_id:this.$store.state.userInfo.identity_id}}).then(({data:res})=>{
+        console.log(res);
+        if(res.status !== 200){
+          return this.$message.error('获取班级失败');
+        } else {
+          this.classArr = res.data;
+        }
+      })
+    },
     getStudentList() {
       this.$http.get("teacher/getStudentList",{
         params:{
           pageNum:this.pageInfo.pageNum,
-          pageSize:this.pageInfo.pageSize
+          pageSize:this.pageInfo.pageSize,
+          teacher_id:this.$store.state.userInfo.identity_id,
         }
       }).then(({data:res})=>{
         if (res.status !== 200) {
@@ -76,9 +85,10 @@ export default {
     classChoose(command) {
       this.$http.get("teacher/getClassStudentList", {
         params: {
-          classes: command,
+          class_id: command,
           pageNum:this.pageInfo.pageNum,
-          pageSize:this.pageInfo.pageSize
+          pageSize:this.pageInfo.pageSize,
+          teacher_id:this.$store.state.userInfo.identity_id,
         },
       }).then(({data:res})=>{
         if (res.status !== 200) {

@@ -25,12 +25,6 @@
           prop="student_name"
           align="center"
         ></el-table-column>
-        <el-table-column label="头像" prop="" align="center"></el-table-column>
-        <el-table-column
-          label="年级"
-          prop="grade_name"
-          align="center"
-        ></el-table-column>
         <el-table-column
           label="班级"
           prop="class_name"
@@ -119,22 +113,9 @@
             <el-option label="女" value="女"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="年级" label-width="80px" prop="grade_name">
-          <el-select v-model="addStdForm.grade_name">
-            <el-option label="一年级" value="一年级"></el-option>
-            <el-option label="二年级" value="二年级"></el-option>
-            <el-option label="三年级" value="三年级"></el-option>
-            <el-option label="四年级" value="四年级"></el-option>
-            <el-option label="五年级" value="五年级"></el-option>
-            <el-option label="六年级" value="六年级"></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="班级" label-width="80px" prop="class_name">
           <el-select v-model="addStdForm.class_name">
-            <el-option label="一班" value="一班"></el-option>
-            <el-option label="二班" value="二班"></el-option>
-            <el-option label="三班" value="三班"></el-option>
-            <el-option label="四班" value="四班"></el-option>
+            <el-option v-for="item in classList" :key="item.class_id" :label="item.class_name" :value="item.class_name"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="家庭住址" label-width="80px" prop="address">
@@ -186,22 +167,9 @@
             <el-option label="女" value="女"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="年级" label-width="80px" prop="grade_name">
-          <el-select v-model="editForm.grade_name">
-            <el-option label="一年级" value="一年级"></el-option>
-            <el-option label="二年级" value="二年级"></el-option>
-            <el-option label="三年级" value="三年级"></el-option>
-            <el-option label="四年级" value="四年级"></el-option>
-            <el-option label="五年级" value="五年级"></el-option>
-            <el-option label="六年级" value="六年级"></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="班级" label-width="80px" prop="class_name">
           <el-select v-model="editForm.class_name">
-            <el-option label="一班" value="一班"></el-option>
-            <el-option label="二班" value="二班"></el-option>
-            <el-option label="三班" value="三班"></el-option>
-            <el-option label="四班" value="四班"></el-option>
+            <el-option v-for="item in classList" :key="item.class_id" :label="item.class_name" :value="item.class_name"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="家庭住址" label-width="80px" prop="address">
@@ -254,7 +222,6 @@ export default {
       addStdForm: {
         student_id: "",
         student_name: "",
-        grade: "",
         class_name: "",
         sex: "",
         address: "",
@@ -276,7 +243,6 @@ export default {
             type: "string",
           },
         ],
-        grade_name: [{ required: true, message: "请选择年级", trigger: "change" }],
         class_name: [{ required: true, message: "请选择班级", trigger: "change" }],
         birthday: [
           { required: true, message: "请选择出生日期", trigger: "blur" },
@@ -300,7 +266,6 @@ export default {
             type: "string",
           },
         ],
-        grade_name: [{ required: true, message: "请选择年级", trigger: "change" }],
         class_name: [{ required: true, message: "请选择班级", trigger: "change" }],
         birthday: [
           { required: true, message: "请选择出生日期", trigger: "blur" },
@@ -309,6 +274,7 @@ export default {
           { required: true, message: "请输入家庭地址", trigger: "blur" },
         ],
       },
+      classList:[],
     };
   },
   created() {
@@ -317,10 +283,11 @@ export default {
   methods: {
     addStudent() {
       this.addStdDialog = true;
+      this.getClass();
     },
     getStudentList() {
       this.$http
-        .get("teacher/getStudentList", {
+        .get("admin/getStudentList", {
           params: {
             pageNum: this.pageInfo.pageNum,
             pageSize: this.pageInfo.pageSize,
@@ -334,6 +301,15 @@ export default {
             this.pageInfo.total = res.total;
           }
         });
+    },
+    getClass(){
+      this.$http.get('admin/getClass').then(({data:res})=>{
+        if(res.status !== 200){
+          return this.$message.error('获取班级列表失败');
+        } else {
+          this.classList = res.data;
+        }
+      })
     },
     //改变每页数据展示规格变化
     handleSizeChange(newSize) {
@@ -373,6 +349,7 @@ export default {
     editStd(data) {
       this.editStdDialog = true;
       this.editForm = data;
+      this.getClass();
     },
     commitEditStdForm() {
       this.$refs.editStdRef.validate((valid) => {
