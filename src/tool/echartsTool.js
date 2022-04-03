@@ -40,19 +40,18 @@ const echartsTool = {
             title:{
                 text:'哈哈哈哈'
             },
-            xAxis:{
-                type:'category',
-                data:['不及格','中等','良好','优秀'],
-            },
-            yAxis:{
-                type:'value',
-                // scale:true,
-            },
             series:[
                 {
                     name:'学生成绩图',
-                    data:[10,20,30,40],
-                    type:'bar'
+                    data:[{name:'不及格',value:20},{name:'及格',value:20},{name:'良好',value:40},{name:'优秀',value:30}],
+                    type:'pie',
+                    label:{
+                        show:true,
+                        formatter:function(arg){
+                            let str = arg.name + arg.value + '人,' + arg.percent + '%';
+                            return str;
+                        }
+                    }
                 },
             ],
         }

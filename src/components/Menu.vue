@@ -52,20 +52,9 @@ export default {
           ],
         },
         {
-          icon: "iconfont icon-kechengguanli",
-          name: "年级管理",
-          id: 2,
-          children: [
-            {
-              name:'年级信息',
-              path:'admin_grade'
-            }
-          ],
-        },
-        {
           icon:"iconfont icon-fenxi",
           name:"班级管理",
-          id:3,
+          id:2,
           children:[
             {
               name:'班级信息',
@@ -76,7 +65,7 @@ export default {
         {
           icon:"iconfont icon-fenxi",
           name:"课程管理",
-          id:4,
+          id:3,
           children:[
             {
               name:'课程信息',
@@ -87,7 +76,7 @@ export default {
         {
           icon:"iconfont icon-fenxi",
           name:"老师管理",
-          id:5,
+          id:4,
           children:[
             {
               name:'老师信息',
@@ -96,9 +85,31 @@ export default {
           ]
         },
         {
+          icon: "iconfont icon-kechengguanli",
+          name: "用户管理",
+          id: 5,
+          children: [
+            {
+              name:'用户信息',
+              path:'user_manage'
+            }
+          ],
+        },
+        {
+          icon: "iconfont icon-kechengguanli",
+          name: "信息管理",
+          id: 6,
+          children: [
+            {
+              name:'首页信息',
+              path:'information_manage'
+            }
+          ],
+        },
+        {
           icon:"iconfont icon-fenxi",
           name:"个人中心",
-          id:6,
+          id:7,
           children:[
             {
               name:"个人信息",

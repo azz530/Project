@@ -28,10 +28,10 @@
             </el-form-item>
             <el-form-item label="身份">
               <el-select v-model="loginForm.identity">
-                <el-option label="管理员" value="admin"></el-option>
-                <el-option label="老师" value="teacher"></el-option>
-                <el-option label="学生" value="student"></el-option>
-                <el-option label="家长" value="parents"></el-option>
+                <el-option label="管理员" value="管理员"></el-option>
+                <el-option label="老师" value="老师"></el-option>
+                <el-option label="学生" value="学生"></el-option>
+                <el-option label="家长" value="家长"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item>
@@ -113,11 +113,12 @@ export default {
             avatar:userInfo.avatar,
             usersign:userInfo.usersign
           });
-          if(userInfo.identity == 'teacher'){
+          console.log(userInfo);
+          if(userInfo.identity === '老师'){
             this.$router.push("/teacher");
-          } else if(userInfo.identity == 'parents' || userInfo.identity == 'student') {
+          } else if(userInfo.identity === '家长' || userInfo.identity === '学生') {
             this.$router.push('/home');
-          } else if(userInfo.identity == 'admin') {
+          } else if(userInfo.identity === '管理员') {
             this.$router.push('/admin');
           }
           

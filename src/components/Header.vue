@@ -29,11 +29,11 @@ export default {
   methods: {
     handleCommand(command) {
       if (command === "userInfo") {
-        if(this.$store.state.userInfo.identity==='student'||this.$store.state.userInfo.identity==='parents'){
+        if(this.$store.state.userInfo.identity==='学生'||this.$store.state.userInfo.identity==='家长'){
           this.$router.push("/userInfo");
         } else if(this.$store.state.userInfo.identity==='admin'){
           this.$router.push("/adminInfo");
-        } else if(this.$store.state.userInfo.identity === 'teacher') {
+        } else if(this.$store.state.userInfo.identity === '老师') {
           this.$router.push("/teacherInfo");
         }
         

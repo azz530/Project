@@ -39,13 +39,13 @@ const router = new VueRouter({
           path:'/student_score',component:resolve => require(['../views/Teacher/Student/StudentScore.vue'],resolve),
         },
         {
-          path:'/class_list', component:resolve => require(['../views/Teacher/Class/ClassList.vue'],resolve),
-        },
-        {
           path:'/class_notice',component:resolve => require(['../views/Teacher/Class/Notice.vue'],resolve),
         },
         {
           path:'/scoreAnalyse',component:resolve => require(['../views/Teacher/Score/ScoreAnalyse.vue'],resolve),
+        },
+        {
+          path:'/student_evaluate',component:resolve => require(['../views/Teacher/Student/StudentEvaluate.vue'],resolve),
         },
       ]
     },
@@ -68,6 +68,12 @@ const router = new VueRouter({
         },
         {
           path:'/admin_teacher',component: resolve => require(['../views/Admin/TeacherInfo.vue'],resolve),
+        },
+        {
+          path:'/user_manage',component: resolve => require(['../views/Admin/UserManage.vue'],resolve),
+        },
+        {
+          path:'/information_manage',component: resolve => require(['../views/Admin/InformationManage.vue'],resolve),
         },
         {
           path:'/adminInfo',component: resolve => require(['../views/Admin/AdminIndex.vue'],resolve),
@@ -97,7 +103,7 @@ router.beforeEach((to,from,next)=> {
       // console.log(this.$store.userInfo.identity);
       console.log(to);
       // console.log(store.state.userInfo.identity);
-      if(store.state.userInfo.identity === 'admin'){
+      if(store.state.userInfo.identity === '管理员'){
         next();
       } else {
         return next('/home')

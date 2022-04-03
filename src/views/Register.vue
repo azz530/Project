@@ -21,8 +21,8 @@
             </el-form-item>
             <el-form-item label="身份选择" prop="identity">
               <el-select v-model="register_form.identity">
-                <el-option label="学生" value="student"></el-option>
-                <el-option label="家长" value="parents"></el-option>
+                <el-option label="学生" value="学生"></el-option>
+                <el-option label="家长" value="家长"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item>

@@ -75,16 +75,16 @@ export default {
           ]
         },
         {
-          icon: "iconfont icon-kechengguanli",
-          name: "班级学生",
-          id: 4,
-          children: [
+          icon:"iconfont icon-fenxi",
+          name:"学生评价",
+          id:4,
+          children:[
             {
-              name: "班级学生",
-              path: "class_list",
-              icon: "iconfont icon-xuanze",
-            }
-          ],
+              name:"学生评价",
+              path:"student_evaluate",
+              icon:"iconfont icon-pingjia",
+            },
+          ]
         },
         {
           icon: "iconfont icon-zuoye1",
@@ -99,21 +99,9 @@ export default {
           ]
         },
         {
-          icon: "iconfont icon-kecheng",
-          name: "班级信息",
-          id: 6,
-          children:[
-            {
-              name: "班级信息",
-              path: "class_information",
-              icon: "iconfont icon-kecheng",
-            },
-          ]
-        },
-        {
           icon:"iconfont icon-fenxi",
           name:"成绩分析",
-          id:7,
+          id:6,
           children:[
             {
               name:"成绩分析",
@@ -122,18 +110,6 @@ export default {
             },
           ]
         },
-        {
-          icon:"iconfont icon-fenxi",
-          name:"学生评价",
-          id:8,
-          children:[
-            {
-              name:"学生评价",
-              path:"data_evaluate",
-              icon:"iconfont icon-pingjia",
-            },
-          ]
-        }
       ],
       isCollapse:false
     };
