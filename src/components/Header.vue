@@ -31,7 +31,7 @@ export default {
       if (command === "userInfo") {
         if(this.$store.state.userInfo.identity==='学生'||this.$store.state.userInfo.identity==='家长'){
           this.$router.push("/userInfo");
-        } else if(this.$store.state.userInfo.identity==='admin'){
+        } else if(this.$store.state.userInfo.identity==='管理员'){
           this.$router.push("/adminInfo");
         } else if(this.$store.state.userInfo.identity === '老师') {
           this.$router.push("/teacherInfo");
@@ -65,7 +65,7 @@ export default {
     background: linear-gradient(
       to bottom right,
       rgb(245, 251, 255),
-      rgb(219, 233, 255)
+      rgba(219, 238, 255, 0.795)
     );
     .title {
       height: 100%;

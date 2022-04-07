@@ -262,7 +262,7 @@ export default {
     },
     handleSuccess(res, file) {
       if (res.status === 200) {
-        this.userInfo.avatar = URL.createObjectURL(file.raw);
+        this.userInfo.avatar = res.avatarUrl;
         this.$store.commit("setUserInfo", {
           username: this.$store.state.userInfo.username,
           id: this.$store.state.userInfo.id,

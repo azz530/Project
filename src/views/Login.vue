@@ -102,7 +102,7 @@ export default {
           let token = res.token;
           this.$store.commit("setToken", token);
           this.$store.commit("setLoginStatus", true);
-
+          
           window.sessionStorage.setItem("token", res.token); //将token存储到sessionStorage
           let userInfo = jwtDecode(res.token);
           this.$store.commit('setUserInfo',{

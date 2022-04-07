@@ -68,18 +68,18 @@
         <div class="userInfo">
           <el-avatar
             :size="150"
-            :src="userInfo.avatar ? userInfo.avatar : default_avatar"
+            :src="userInfo.avatar"
           ></el-avatar>
           <el-upload
             ref="upload"
-            action="http://127.0.0.1:3000/my/uploadAvatar"
-            :on-success="handleSuccess"
+            action='http://127.0.0.1:3000/my/uploadAvatar'
             :before-upload="beforeAvatarUpload"
+            :on-success="handleSuccess"
             :show-file-list="false"
             :limit="1"
             :data="{ id }"
-            :headers="headers"
             name="avatar"
+            :headers="headers"
           >
             <el-button size="small" type="primary">修改头像</el-button>
           </el-upload>
@@ -372,11 +372,10 @@ export default {
     return {
       headers: {
         Authorization: this.$store.state.token,
-        "Content-Type": "multipart/form-data",
       },
       default_avatar: "https://i02piccdn.sogoucdn.com/54b55e50edd9d56a",
       userInfo: {},
-      id: "",
+      id: this.$store.state.userInfo.id,
       userTags: [],
       inputVisible: false,
       inputValue: "",
@@ -452,7 +451,6 @@ export default {
   },
   methods: {
     getUserInfo() {
-      this.id = this.$store.state.userInfo.id;
       this.$http
         .get("my/getUserInfo", {
           params: { id: this.id },
@@ -483,7 +481,7 @@ export default {
     },
     handleSuccess(res, file) {
       if (res.status === 200) {
-        this.userInfo.avatar = URL.createObjectURL(file.raw);
+        this.userInfo.avatar = res.avatarUrl;
         this.$store.commit("setUserInfo", {
           username: this.$store.state.userInfo.username,
           id: this.$store.state.userInfo.id,
@@ -637,7 +635,6 @@ export default {
       this.$http
         .get("my/getNotice", { params: { student_id: this.$store.state.userInfo.identity_id } })
         .then(({ data: res }) => {
-          console.log(res);
           if (res.status !== 200) {
             return this.$message.error("获取班级公告失败");
           } else {

@@ -83,6 +83,10 @@ const router = new VueRouter({
     {
       path:'/userInfo',
       component: resolve => require(['../views/UserInfo.vue'],resolve),
+    },
+    {
+      path:'/notice',
+      component: resolve => require(['../views/Notice.vue'],resolve),
     }
   ]
 })
@@ -96,20 +100,24 @@ router.beforeEach((to,from,next)=> {
     return next();
   }
   const tokenStr = window.sessionStorage.getItem('token'); //获取token
+  const state = JSON.parse(window.sessionStorage.getItem('state'));
   if(!tokenStr){
     return next('/login');
   } else {
-    if(to.path === '/admin' || to.path === '/adminInfo'){
-      // console.log(this.$store.userInfo.identity);
-      console.log(to);
-      // console.log(store.state.userInfo.identity);
-      if(store.state.userInfo.identity === '管理员'){
-        next();
+    if(state){
+      const identity = state.userInfo.identity;
+      if(to.path === '/admin' || to.path === '/adminInfo'){
+        if(identity === '管理员'){
+          next();
+        } else {
+          return next('/home');
+        }
       } else {
-        return next('/home')
+        next();
       }
+    } else {
+      next();
     }
-    next();
   }
 })
 
