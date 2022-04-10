@@ -38,7 +38,7 @@ const echartsTool = {
     ScoreAnalyse:()=>{
         return {
             title:{
-                text:'哈哈哈哈'
+                text:'成绩分析'
             },
             series:[
                 {
@@ -48,7 +48,7 @@ const echartsTool = {
                     label:{
                         show:true,
                         formatter:function(arg){
-                            let str = arg.name + arg.value + '人,' + arg.percent + '%';
+                            let str = arg.name + ' ' + arg.value + '人,' + arg.percent + '%';
                             return str;
                         }
                     }

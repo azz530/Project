@@ -31,6 +31,11 @@
           prop="course_message"
           align="center"
         ></el-table-column>
+        <el-table-column
+          label="选课人数"
+          prop="num"
+          align="center"
+        ></el-table-column>
         <el-table-column label="操作" prop="" width="250px" align="center">
           <template v-slot="scope">
             <el-tooltip
@@ -133,7 +138,7 @@ export default {
     const validateNum = (rule, value, callback) => {
       let reg = /^[+]{0,1}(\d+)$/g;
       if (value === "") {
-        callback(new Error("请输入工号"));
+        callback(new Error("请输入课程号"));
       } else if (!reg.test(value)) {
         callback(new Error("只能输入数字"));
       } else {

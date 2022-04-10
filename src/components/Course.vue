@@ -2,13 +2,17 @@
   <div class="course_container">
     <div class="tips">
       <i class="iconfont icon-gonggao"></i>
-      <span>课程视频</span>
+      <span>推荐视频</span>
     </div>
     <div class="line"></div>
     <div class="video">
       <el-carousel :interval="4000" type="card" height="400px">
-        <el-carousel-item v-for="item in 3" :key="item">
-            <video class="course_video" src="https://v.cic.tsinghua.edu.cn/vod/video/2/d/282058.mp4" controls></video>
+        <el-carousel-item v-for="item in videoList" :key="item.id">
+          <video
+            class="course_video"
+            :src="item.url"
+            controls
+          ></video>
         </el-carousel-item>
       </el-carousel>
     </div>
@@ -17,13 +21,25 @@
 
 <script>
 export default {
-    data(){
-        return{
-            video:[
-                {src:'https://v.cic.tsinghua.edu.cn/vod/video/2/d/282058.mp4'}
-            ]
+  data() {
+    return {
+      videoList: [],
+    };
+  },
+  created() {
+    this.getVideo();
+  },
+  methods: {
+    getVideo() {
+      this.$http.get("admin/getVideo").then(({ data: res }) => {
+        if (res.status !== 200) {
+          return this.$message.error("获取视频信息失败");
+        } else {
+          this.videoList = res.data;
         }
-    }
+      });
+    },
+  },
 };
 </script>
 
@@ -35,23 +51,26 @@ export default {
     display: flex;
     align-items: center;
     i {
+      color: rgb(121, 152, 255);
       font-size: 40px;
     }
     span {
+      color: rgb(121, 152, 255);
       margin-left: 10px;
+      font-size: 24px;
     }
   }
   .line {
     height: 2px;
     width: 1260px;
-    background-color: rgb(143, 142, 142);
+    background-color:rgb(121, 152, 255);
     margin-left: 40px;
   }
-  .video{
-      margin-top: 40px;
-      .course_video{
-          width: 700px;
-      }
+  .video {
+    margin-top: 40px;
+    .course_video {
+      width: 700px;
+    }
   }
 }
 </style>

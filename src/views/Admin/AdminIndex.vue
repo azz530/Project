@@ -101,28 +101,21 @@
         </div>
       </el-card>
       <el-card class="right-card">
-        <el-collapse v-model="activeNames" accordion>
-          <el-collapse-item name="1">
-            <template slot="title">
-              <i class="iconfont icon-xuesheng"></i>
-              <p class="tilte">用户操作</p>
-            </template>
-            <el-timeline>
-              <el-timeline-item
-                v-for="item in userLog"
-                :key="item.id"
-                :timestamp="item.log_time"
-                placement="top"
-              >
-                <el-card>
-                  <h4>{{ item.log_classify }}</h4>
-                  <p>{{ item.log_classify }}</p>
-                </el-card>
-              </el-timeline-item>
-            </el-timeline>
-          </el-collapse-item>
-        </el-collapse>
+        <span>日程安排</span>
+        <el-calendar v-model="nowDate">
+          <template slot="dateCell" slot-scope="{ data }">
+            <div class="day" @click="editTest(data.day)">
+              {{ data.day.split("-").slice(2)[0] }}
+              <div class="activity" v-for="item in calendarData" :key="item.id">
+                <div v-if="item.actime.indexOf(data.day) > -1">
+                  {{ item.name }}
+                </div>
+              </div>
+            </div>
+          </template>
+        </el-calendar>
       </el-card>
+
       <el-dialog
         title="修改个人信息"
         :visible.sync="editDialog"
@@ -179,6 +172,43 @@
           <el-button @click="editDialog = false">取 消</el-button>
         </div>
       </el-dialog>
+
+      <el-dialog
+        title="新增活动"
+        :visible.sync="activityDialog"
+        width="35%"
+        @close="closeactivityDialog"
+      >
+        <el-form
+          :model="activityForm"
+          :rules="activityFormRules"
+          label-width="50px"
+          ref="activityRef"
+        >
+          <el-form-item label="活动名" label-width="80px" prop="name">
+            <el-input
+              v-model="activityForm.name"
+              class="input_short"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="活动时间" label-width="80px" prop="actime">
+            <el-date-picker
+              v-model="activityForm.actime"
+              type="date"
+              placeholder="选择日期"
+              format="yyyy 年 MM 月 dd 日"
+              value-format="yyyy-MM-dd"
+            >
+            </el-date-picker>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="commitactivityForm"
+            >确 定</el-button
+          >
+          <el-button @click="activityDialog = false">取 消</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -187,8 +217,8 @@
 export default {
   data() {
     return {
-      headers:{
-        'Authorization':this.$store.state.token,
+      headers: {
+        Authorization: this.$store.state.token,
       },
       default_avatar: "https://i02piccdn.sogoucdn.com/54b55e50edd9d56a",
       userInfo: {},
@@ -196,8 +226,6 @@ export default {
       userTags: [],
       inputVisible: false,
       inputValue: "",
-      activeNames: "1",
-      userLog: {},
       editDialog: false,
       editForm: {
         username: "",
@@ -223,10 +251,19 @@ export default {
         ],
         address: [{ required: true, message: "请输入地址", trigger: "blur" }],
       },
+      nowDate: new Date(),
+      calendarData: [],
+      activityDialog: false,
+      activityForm: {},
+      activityFormRules: {
+        name: [{ required: true, message: "请输入活动名称", trigger: "blur" }],
+        actime: [{ required: true, message: "请选择时间", trigger: "blur" }],
+      },
     };
   },
   created() {
     this.getUserInfo();
+    this.getActivity();
   },
   methods: {
     getUserInfo() {
@@ -346,6 +383,55 @@ export default {
         }
       });
     },
+    getActivity() {
+      this.$http
+        .get("my/getActivity", {
+          params: { id: this.$store.state.userInfo.id },
+        })
+        .then(({ data: res }) => {
+          if (res.status !== 200) {
+            return this.$message.error("未添加安排");
+          } else {
+            this.calendarData = res.data;
+          }
+        });
+    },
+    editTest(day) {
+      let status = false;
+      this.calendarData.map((i) => {
+        if (i.actime === day) {
+          status = true;
+        }
+      });
+      if (status) {
+        this.$message.error("该天已安排活动");
+      } else {
+        this.activityDialog = true;
+        this.activityForm.actime = day;
+      }
+    },
+    closeactivityDialog() {
+      this.activityDialog = false;
+    },
+    commitactivityForm() {
+      this.$refs.activityRef.validate((valid) => {
+        if (valid) {
+          this.$http
+            .post("my/addActivity", this.activityForm, {
+              params: { id: this.$store.state.userInfo.id },
+            })
+            .then(({ data: res }) => {
+              if (res.status !== 200) {
+                return this.$message.error("新增活动失败");
+              } else {
+                this.$message.success("新增活动成功");
+                this.activityDialog = false;
+                this.getActivity();
+              }
+            });
+        }
+      });
+    },
   },
 };
 </script>
@@ -361,13 +447,13 @@ export default {
     display: flex;
     flex-direction: row;
     .left-card {
-      flex: 3;
+      width: 400px;
       margin-right: 30px;
       height: 60vh;
       .userInfo {
         text-align: center;
         position: relative;
-        .el-icon-setting{
+        .el-icon-setting {
           cursor: pointer;
           position: absolute;
           left: 0;
@@ -425,13 +511,24 @@ export default {
       }
     }
     .right-card {
-      flex: 5;
-      i {
-        font-size: 22px;
-        margin-right: 10px;
-      }
-      .tilte {
-        font-size: 20px;
+      flex: 7;
+      .el-calendar {
+        width: 100%;
+        .day {
+          height: 100%;
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          position: relative;
+          .activity {
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: rgb(15, 88, 247);
+            font-size: 16px;
+          }
+        }
       }
     }
   }

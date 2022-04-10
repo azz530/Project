@@ -797,7 +797,7 @@ export default {
       .notice {
         min-width: 900px;
         max-width: 1000px;
-        max-height: 400px;
+        max-height: 430px;
         margin-left: 20px;
         position: relative;
         cursor: pointer;

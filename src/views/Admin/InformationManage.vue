@@ -21,7 +21,7 @@
                 class="picturePreview"
                 @click="handlePictureCardPreview(item)"
               >
-                <i class="el-icon-zoom-in"></i>
+                <i class="el-icon-search"></i>
               </span>
             </div>
           </div>
@@ -99,7 +99,31 @@
       </el-card>
     </el-card>
     <el-card class="Video">
-      <span>视频管理</span>
+      <span>首页展示视频管理</span>
+
+      <div class="videoUpload">
+        <div class="videoList" v-for="item in videoList" :key="item.id">
+          <video :src="item.url ? item.url : item" controls></video>
+          <el-button
+            class="videoDel"
+            type="danger"
+            icon="el-icon-close"
+            @click="delVideo(item.id)"
+            size="mini"
+            circle
+          ></el-button>
+        </div>
+        <el-upload
+          action="http://localhost:3000/admin/addVideo"
+          :show-file-list="false"
+          :on-success="handleVideoSuccess"
+          :headers="headers"
+        >
+          <el-button v-show="videoList.length < 3" type="primary"
+            >上传视频</el-button
+          >
+        </el-upload>
+      </div>
     </el-card>
     <el-dialog :visible.sync="dialogVisible">
       <img width="100%" :src="dialogImageUrl" alt="" />
@@ -154,6 +178,7 @@
 export default {
   data() {
     return {
+      headers: { Authorization: this.$store.state.token },
       dialogImageUrl: "",
       dialogVisible: false,
       PicShow: true,
@@ -193,21 +218,49 @@ export default {
       },
       ShowUploadPic: true,
       PictureList: [],
+      videoList: [],
     };
   },
   created() {
     this.getNotice();
     this.getBanner();
+    this.getVideo();
   },
   methods: {
     getBanner() {
       this.$http.get("admin/getBanner").then(({ data: res }) => {
-        console.log(res);
         if (res.status !== 200) {
           return this.$message.eror("获取轮播图失败");
         } else {
           this.showPicList = res.data.picture;
         }
+      });
+    },
+    getNotice() {
+      this.$http
+        .get("admin/getNotice", {
+          params: {
+            pageNum: this.pageInfo.pageNum,
+            pageSize: this.pageInfo.pageSize,
+          },
+        })
+        .then(({ data: res }) => {
+          if (res.status !== 200) {
+            return this.$message.error("获取公告列表失败");
+          } else {
+            this.NoticeArr = res.data;
+            this.pageInfo.total = res.total;
+          }
+        });
+    },
+    getVideo() {
+      this.$http.get("admin/getVideo").then(({ data: res }) => {
+        if (res.status !== 200) {
+          return this.$message.error("获取视频信息失败");
+        } else {
+          this.videoList = res.data;
+        }
+        console.log(this.videoList);
       });
     },
     bannnerChange(file, fileList) {
@@ -247,23 +300,6 @@ export default {
       } else {
         return this.$message.error("请选择图片");
       }
-    },
-    getNotice() {
-      this.$http
-        .get("admin/getNotice", {
-          params: {
-            pageNum: this.pageInfo.pageNum,
-            pageSize: this.pageInfo.pageSize,
-          },
-        })
-        .then(({ data: res }) => {
-          if (res.status !== 200) {
-            return this.$message.error("获取公告列表失败");
-          } else {
-            this.NoticeArr = res.data;
-            this.pageInfo.total = res.total;
-          }
-        });
     },
     //改变每页数据展示规格变化
     handleSizeChange(newSize) {
@@ -340,6 +376,35 @@ export default {
         })
         .catch((err) => err);
     },
+
+    handleVideoSuccess(res, file) {
+      if (res.status === 200) {
+        this.$message.success("上传成功");
+        this.videoList.push(res.url);
+      }
+    },
+    delVideo(id) {
+      this.$confirm("是否删除该视频", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then((res) => {
+          if (res === "confirm") {
+            this.$http
+              .delete("admin/delVideo", { params: { id } })
+              .then((res) => {
+                if (res.status != 200) {
+                  this.$message.error("删除失败");
+                } else {
+                  this.$message.success("删除成功");
+                }
+                this.getVideo();
+              });
+          }
+        })
+        .catch((err) => err);
+    },
   },
 };
 </script>
@@ -368,18 +433,22 @@ export default {
         position: relative;
         margin-left: 20px;
         &:hover .mask {
-          opacity: 1;
+          opacity: 0.85;
         }
       }
       .mask {
         height: 150px;
         width: 150px;
         border-radius: 10px;
-        background: rgba(0, 0, 0, 0.2);
+        background: rgba(0, 0, 0, 0.3);
         opacity: 0;
         position: absolute;
         right: 0;
         top: 0;
+        i {
+          font-size: 22px;
+          color: rgb(2, 2, 80);
+        }
       }
       .picturePreview {
         cursor: pointer;
@@ -451,8 +520,33 @@ export default {
       margin-top: 10px;
     }
   }
-  .Video{
+  .Video {
     margin-top: 20px;
+    .videoUpload {
+      display: flex;
+      align-items: center;
+      margin-top: 20px;
+      margin-left: 20px;
+      .videoList {
+        height: 200px;
+        width: 350px;
+        position: relative;
+        margin-right: 20px;
+        &:hover .videoDel {
+          opacity: 1;
+        }
+        .videoDel {
+          position: absolute;
+          right: 10px;
+          top: 10px;
+          opacity: 0;
+        }
+        video {
+          height: 200px;
+          width: 350px;
+        }
+      }
+    }
   }
 }
 </style>

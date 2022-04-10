@@ -5,6 +5,22 @@
       <el-breadcrumb-item>用户信息</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card class="box-card">
+      <el-row :gutter="16">
+        <el-col :span="7">
+          <el-input
+            placeholder="输入用户id或用户名进行搜素"
+            v-model="searchValue"
+            clearable
+            @keyup.enter.native="search"
+            @clear="closeSearch"
+          ></el-input>
+        </el-col>
+        <el-col :span="2">
+          <el-button type="primary" icon="el-icon-search" @click="search"
+            >搜索</el-button
+          >
+        </el-col>
+      </el-row>
       <el-table border style="width: 100%" :data="UserList">
         <el-table-column
           type="index"
@@ -86,9 +102,7 @@
       >
       </el-pagination>
     </el-card>
-    <el-card class="userData">
-
-    </el-card>
+    <el-card class="userData"> </el-card>
 
     <el-dialog
       title="修改用户信息"
@@ -118,8 +132,12 @@
             <el-option label="家长" value="家长"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="学号/教师号" label-width="100px" prop="identity_id">
-            <el-input v-model="editForm.identity_id"></el-input>
+        <el-form-item
+          label="学号/教师号"
+          label-width="100px"
+          prop="identity_id"
+        >
+          <el-input v-model="editForm.identity_id"></el-input>
         </el-form-item>
         <el-form-item label="家庭住址" label-width="100px" prop="address">
           <el-input
@@ -158,22 +176,26 @@ export default {
       } else if (!reg.test(value)) {
         callback(new Error("只能输入数字"));
       } else {
-        this.$http.get('my/getUserID',{params:{identity:this.editForm.identity,identity_id:value}}).then(({data:res})=>{
+        this.$http
+          .get("my/getUserID", {
+            params: { identity: this.editForm.identity, identity_id: value },
+          })
+          .then(({ data: res }) => {
             console.log(res);
-            if(res.status !== 200){
-                if(res.status === 403){
-                    callback(new Error("该学号不存在"));
-                } else if (res.status === 404) {
-                    callback(new Error("该学号已被绑定"));
-                } else if(res.status === 405){
-                    callback(new Error("该教师号不存在"));
-                } else if (res.status === 406) {
-                    callback(new Error("该教师号已被绑定"));
-                }
+            if (res.status !== 200) {
+              if (res.status === 403) {
+                callback(new Error("该学号不存在"));
+              } else if (res.status === 404) {
+                callback(new Error("该学号已被绑定"));
+              } else if (res.status === 405) {
+                callback(new Error("该教师号不存在"));
+              } else if (res.status === 406) {
+                callback(new Error("该教师号已被绑定"));
+              }
             } else {
-                callback();
+              callback();
             }
-        })  
+          });
       }
     };
     return {
@@ -183,6 +205,7 @@ export default {
         pageSize: 5,
         total: 0,
       },
+      searchValue: "",
       editDialog: false,
       editForm: {},
       editFormRules: {
@@ -205,9 +228,13 @@ export default {
             type: "string",
           },
         ],
-        identity_id:[{
-            required: true, validator: validateNum, trigger: "blur" 
-        }],
+        identity_id: [
+          {
+            required: true,
+            validator: validateNum,
+            trigger: "blur",
+          },
+        ],
         birthday: [
           { required: true, message: "请选择出生日期", trigger: "blur" },
         ],
@@ -215,7 +242,7 @@ export default {
           { required: true, message: "请输入家庭地址", trigger: "blur" },
         ],
       },
-      classList:[],
+      classList: [],
     };
   },
   created() {
@@ -254,13 +281,15 @@ export default {
     },
     editStd(id) {
       this.editDialog = true;
-      this.$http.get('admin/getUserById',{params:{id}}).then(({data:res})=>{
-          if(res.status !== 200) {
-              return this.$message.error('获取用户信息失败');
+      this.$http
+        .get("admin/getUserById", { params: { id } })
+        .then(({ data: res }) => {
+          if (res.status !== 200) {
+            return this.$message.error("获取用户信息失败");
           } else {
-              this.editForm = res.data;
+            this.editForm = res.data;
           }
-      })
+        });
     },
     commitEditForm() {
       this.$refs.editRef.validate((valid) => {
@@ -282,10 +311,11 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-      }).then((res) => {
+      })
+        .then((res) => {
           if (res === "confirm") {
             this.$http
-              .delete("admin/delUser", { params: {id} })
+              .delete("admin/delUser", { params: { id } })
               .then((res) => {
                 if (res.status != 200) {
                   this.$message.error("删除失败");
@@ -295,7 +325,27 @@ export default {
                 this.getUserList();
               });
           }
-      }).catch((err) => err);
+        })
+        .catch((err) => err);
+    },
+    search() {
+      if (this.searchValue) {
+        this.$http
+          .get("admin/searchUser", { params: { str: this.searchValue } })
+          .then(({ data: res }) => {
+            console.log(res);
+            if (res.status !== 200) {
+              return this.$message.error("查询失败");
+            } else {
+              this.UserList = res.data;
+            }
+          });
+      } else {
+        return this.$message.error("请输入");
+      }
+    },
+    closeSearch() {
+      this.getUserList();
     },
   },
 };
@@ -319,7 +369,7 @@ export default {
       margin-top: 10px;
     }
   }
-  .userData{
+  .userData {
     margin-top: 30px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
   }

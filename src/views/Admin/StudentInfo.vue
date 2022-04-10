@@ -5,7 +5,26 @@
       <el-breadcrumb-item>学生信息</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card class="box-card">
-      <el-button type="primary" @click="addStudent"> 新增学生 </el-button>
+      <el-row :gutter="16">
+        <el-col :span="7">
+          <el-input
+            placeholder="输入学号或姓名进行搜素"
+            v-model="searchValue"
+            clearable
+            @keyup.enter.native='search'
+            @clear='closeSearch'
+          ></el-input>
+        </el-col>
+        <el-col :span="2">
+          <el-button type="primary" icon="el-icon-search" @click="search"
+            >搜索</el-button
+          >
+        </el-col>
+        <el-col :span="3">
+          <el-button type="primary" @click="addStudent"> 新增学生 </el-button>
+        </el-col>
+      </el-row>
+
       <el-table border style="width: 100%" :data="StdList">
         <el-table-column
           type="index"
@@ -115,7 +134,12 @@
         </el-form-item>
         <el-form-item label="班级" label-width="80px" prop="class_name">
           <el-select v-model="addStdForm.class_name">
-            <el-option v-for="item in classList" :key="item.class_id" :label="item.class_name" :value="item.class_name"></el-option>
+            <el-option
+              v-for="item in classList"
+              :key="item.class_id"
+              :label="item.class_name"
+              :value="item.class_name"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="家庭住址" label-width="80px" prop="address">
@@ -169,7 +193,12 @@
         </el-form-item>
         <el-form-item label="班级" label-width="80px" prop="class_name">
           <el-select v-model="editForm.class_name">
-            <el-option v-for="item in classList" :key="item.class_id" :label="item.class_name" :value="item.class_name"></el-option>
+            <el-option
+              v-for="item in classList"
+              :key="item.class_id"
+              :label="item.class_name"
+              :value="item.class_name"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="家庭住址" label-width="80px" prop="address">
@@ -219,6 +248,7 @@ export default {
         pageSize: 5,
         total: 0,
       },
+      searchValue: "",
       addStdForm: {
         student_id: "",
         student_name: "",
@@ -243,7 +273,9 @@ export default {
             type: "string",
           },
         ],
-        class_name: [{ required: true, message: "请选择班级", trigger: "change" }],
+        class_name: [
+          { required: true, message: "请选择班级", trigger: "change" },
+        ],
         birthday: [
           { required: true, message: "请选择出生日期", trigger: "blur" },
         ],
@@ -266,7 +298,9 @@ export default {
             type: "string",
           },
         ],
-        class_name: [{ required: true, message: "请选择班级", trigger: "change" }],
+        class_name: [
+          { required: true, message: "请选择班级", trigger: "change" },
+        ],
         birthday: [
           { required: true, message: "请选择出生日期", trigger: "blur" },
         ],
@@ -274,7 +308,7 @@ export default {
           { required: true, message: "请输入家庭地址", trigger: "blur" },
         ],
       },
-      classList:[],
+      classList: [],
     };
   },
   created() {
@@ -302,14 +336,14 @@ export default {
           }
         });
     },
-    getClass(){
-      this.$http.get('admin/getClass').then(({data:res})=>{
-        if(res.status !== 200){
-          return this.$message.error('获取班级列表失败');
+    getClass() {
+      this.$http.get("admin/getClass").then(({ data: res }) => {
+        if (res.status !== 200) {
+          return this.$message.error("获取班级列表失败");
         } else {
           this.classList = res.data;
         }
-      })
+      });
     },
     //改变每页数据展示规格变化
     handleSizeChange(newSize) {
@@ -371,7 +405,8 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-      }).then((res) => {
+      })
+        .then((res) => {
           if (res === "confirm") {
             this.$http
               .delete("admin/delStudent", { params: { student_id: id } })
@@ -384,8 +419,28 @@ export default {
                 this.getStudentList();
               });
           }
-      }).catch((err) => err);
+        })
+        .catch((err) => err);
     },
+    search() {
+      if (this.searchValue) {
+        this.$http
+          .get("admin/searchStd", { params: { str: this.searchValue } })
+          .then(({ data: res }) => {
+            console.log(res);
+            if (res.status !== 200) {
+              return this.$message.error("查询失败");
+            } else {
+              this.StdList = res.data;
+            }
+          });
+      } else {
+        return this.$message.error("请输入");
+      }
+    },
+    closeSearch(){
+      this.getStudentList();
+    }
   },
 };
 </script>

@@ -5,7 +5,25 @@
       <el-breadcrumb-item>老师信息</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card class="box-card">
-      <el-button type="primary" @click="addTeacher"> 添加老师 </el-button>
+      <el-row :gutter="16">
+        <el-col :span="7">
+          <el-input
+            placeholder="输入教师号或姓名进行搜素"
+            v-model="searchValue"
+            clearable
+            @keyup.enter.native="search"
+            @clear="closeSearch"
+          ></el-input>
+        </el-col>
+        <el-col :span="2">
+          <el-button type="primary" icon="el-icon-search" @click="search"
+            >搜索</el-button
+          >
+        </el-col>
+        <el-col :span="3">
+          <el-button type="primary" @click="addTeacher"> 添加老师 </el-button>
+        </el-col>
+      </el-row>
       <el-table border style="width: 100%" :data="TeacherList">
         <el-table-column
           type="index"
@@ -185,6 +203,7 @@ export default {
         pageSize: 5,
         total: 0,
       },
+      searchValue:'',
       addDialog: false,
       addTeacherForm: {
         teacher_id: "",
@@ -232,8 +251,8 @@ export default {
           },
         ],
       },
-      editDialog:false,
-      editForm:{},
+      editDialog: false,
+      editForm: {},
     };
   },
   created() {
@@ -309,31 +328,34 @@ export default {
       this.editForm = data;
       this.getCourse();
     },
-    closeEditDialog(){
+    closeEditDialog() {
       this.$refs.editRef.resetFields();
     },
-    commitEditForm(){
-      this.$refs.editRef.validate((valid)=>{
-        if(valid) {
-          this.$http.put('admin/changeTeacherInfo',this.editForm).then(res=>{
-            console.log(res);
-            if(res.status !== 200){
-              return this.$message.error('修改失败');
-            } else {
-              this.$message.success('修改成功');
-              this.getTeacherList();
-              this.editDialog = false;
-            }
-          })
+    commitEditForm() {
+      this.$refs.editRef.validate((valid) => {
+        if (valid) {
+          this.$http
+            .put("admin/changeTeacherInfo", this.editForm)
+            .then((res) => {
+              console.log(res);
+              if (res.status !== 200) {
+                return this.$message.error("修改失败");
+              } else {
+                this.$message.success("修改成功");
+                this.getTeacherList();
+                this.editDialog = false;
+              }
+            });
         }
-      })
+      });
     },
-    deleteTeacher(id){
+    deleteTeacher(id) {
       this.$confirm("是否删除该老师", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-      }).then((res) => {
+      })
+        .then((res) => {
           if (res === "confirm") {
             this.$http
               .delete("admin/delTeacher", { params: { teacher_id: id } })
@@ -346,8 +368,28 @@ export default {
                 this.getTeacherList();
               });
           }
-      }).catch((err) => err);
-    }
+        })
+        .catch((err) => err);
+    },
+    search() {
+      if (this.searchValue) {
+        this.$http
+          .get("admin/searchTeacher", { params: { str: this.searchValue } })
+          .then(({ data: res }) => {
+            console.log(res);
+            if (res.status !== 200) {
+              return this.$message.error("查询失败");
+            } else {
+              this.TeacherList = res.data;
+            }
+          });
+      } else {
+        return this.$message.error("请输入");
+      }
+    },
+    closeSearch() {
+      this.getTeacherList();
+    },
   },
 };
 </script>

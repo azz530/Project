@@ -10,17 +10,14 @@
         class="ScoreAnalyse"
       ></Echarts>
     </el-card>
-    
   </div>
 </template>
 
 <script>
 import Echarts from "../../../components/EchartsPic/Echarts.vue";
-import UserCard from '../../../components/UserCard.vue'
 export default {
   components: {
     Echarts,
-    UserCard
   },
   data() {
     return {
@@ -38,10 +35,10 @@ export default {
           return this.$message.error('获取成绩失败');
         } else {
           const ScoreData = [
-            {name:'不及格',value:res.data.d},
-            {name:'及格',value:res.data.c},
-            {name:'良好',value:res.data.b},
-            {name:'优秀',value:res.data.a}
+            {name:'不及格(<60)',value:res.data.d},
+            {name:'及格(60~70)',value:res.data.c},
+            {name:'良好(70~90)',value:res.data.b},
+            {name:'优秀(90~100)',value:res.data.a}
           ];
           this.DataAnalysePropData.series[0].data = ScoreData;
         }
