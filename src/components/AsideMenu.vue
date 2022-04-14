@@ -41,11 +41,11 @@ export default {
       menu_items: [
         {
           icon: "iconfont icon-kaoqin",
-          name: "学生考勤",
+          name: "学生信息",
           id:1,
           children:[
             {
-              name: "学生考勤",
+              name: "学生信息",
               path: "student_check",
               icon: "iconfont icon-kaoqin",
             }

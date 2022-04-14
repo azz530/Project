@@ -304,6 +304,7 @@ export default {
           username: this.$store.state.userInfo.username,
           id: this.$store.state.userInfo.id,
           identity: this.$store.state.userInfo.identity,
+          identity_id: this.$store.state.userInfo.identity_id,
           avatar: this.userInfo.avatar,
           usersign: this.$store.state.userInfo.usersign,
         });

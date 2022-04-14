@@ -6,7 +6,53 @@
     </el-breadcrumb>
     <el-card class="box-card">
       <el-button type="primary" @click="addCourse"> 新增课程 </el-button>
-      <el-table border style="width: 100%" :data="CourseList">
+      <el-table
+        border
+        style="width: 100%"
+        :data="CourseList"
+        @expand-change="getCourseStd"
+        class="courseTable"
+      >
+        <el-table-column
+          type="expand"
+          label="展开"
+          fixed
+          align="center"
+          width="100px"
+        >
+          <template v-slot="scope">
+            <el-table
+              border
+              style="width: 100%"
+              :data="scope.row.childrenList"
+              max-height="196px"
+            >
+              <el-table-column
+                label="学号"
+                prop="student_id"
+                fixed
+                align="center"
+              >
+              </el-table-column>
+              <el-table-column
+                label="姓名"
+                prop="student_name"
+                fixed
+                align="center"
+              >
+              </el-table-column>
+              <el-table-column label="性别" prop="sex" fixed align="center">
+              </el-table-column>
+              <el-table-column
+                label="班级"
+                prop="class_name"
+                fixed
+                align="center"
+              >
+              </el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
         <el-table-column
           type="index"
           label="序号"
@@ -38,6 +84,19 @@
         ></el-table-column>
         <el-table-column label="操作" prop="" width="250px" align="center">
           <template v-slot="scope">
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="添加学生"
+              placement="top"
+              :enterable="false"
+            >
+              <el-button
+                type="primary"
+                icon="el-icon-plus"
+                @click="addStd(scope.row.course_id)"
+              ></el-button>
+            </el-tooltip>
             <el-tooltip
               class="item"
               effect="dark"
@@ -80,7 +139,7 @@
     </el-card>
 
     <el-dialog
-      title="新增老师"
+      title="新增课程"
       :visible.sync="addDialog"
       width="50%"
       @close="closeAddDialog"
@@ -103,7 +162,7 @@
     </el-dialog>
 
     <el-dialog
-      title="修改老师信息"
+      title="修改课程信息"
       :visible.sync="editDialog"
       width="50%"
       @close="closeEditDialog"
@@ -129,6 +188,28 @@
         <el-button @click="editDialog = false">取 消</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog
+      title="添加学生"
+      :visible.sync="addStdDialog"
+      width="50%"
+      @close="closeAddStdDialog"
+    >
+        <el-tree
+          :data="ClassStdList"
+          show-checkbox
+          node-key="student_id"
+          :props="treeProps"
+          ref="treeRef"
+          :default-expanded-keys="defExpandKeys"
+          :default-checked-keys="defCheckKeys"
+        >
+        </el-tree>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="commitAddStdForm">确 定</el-button>
+        <el-button @click="addStdDialog = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -147,6 +228,7 @@ export default {
     };
     return {
       CourseList: [],
+      ClassStdList: [],
       pageInfo: {
         pageNum: 1,
         pageSize: 5,
@@ -173,6 +255,14 @@ export default {
       },
       TeacherList: [],
       editForm: {},
+      addStdDialog: false,
+      treeProps: {
+        label: "class_name",
+        children: "children",
+      },
+      defExpandKeys: [],
+      defCheckKeys: [],
+      course_id:'',
     };
   },
   created() {
@@ -191,8 +281,26 @@ export default {
           if (res.status !== 200) {
             return this.$message.error("获取课程列表失败");
           } else {
+            res.data.map((item) => {
+              item.childrenList = [];
+            });
             this.CourseList = res.data;
             this.pageInfo.total = res.total;
+          }
+        });
+    },
+    getCourseStd(row) {
+      this.$http
+        .get("admin/getCourseStd", { params: { course_id: row.course_id } })
+        .then(({ data: res }) => {
+          if (res.status !== 200) {
+            return this.$message.error("该课程暂未添加学生");
+          } else {
+            this.CourseList.map((item, index) => {
+              if (item.course_id === row.course_id) {
+                this.CourseList[index].childrenList = res.data;
+              }
+            });
           }
         });
     },
@@ -238,6 +346,48 @@ export default {
     },
     closeEditDialog() {
       this.$refs.editRef.resetFields();
+    },
+    addStd(id) {
+      this.course_id = id;
+      this.$http
+        .get("admin/getCourseStd", { params: { course_id: id } })
+        .then(({ data: res }) => {
+          if (res.status !== 200) {
+            return this.$message.error("该课程暂未添加学生");
+          } else {
+            this.defCheckKeys = [];
+            this.defExpandKeys = [];
+            res.data.map((item) => {
+              this.defCheckKeys.push(item.student_id);
+              this.defExpandKeys.push(item.student_id);
+            });
+          }
+        });
+      this.$http.get("admin/getClassStd").then(({ data: res }) => {
+        if (res.status !== 200) {
+          return this.$message("获取班级、学生列表失败");
+        } else {
+          this.ClassStdList = res.data;
+        }
+      });
+      this.addStdDialog = true;
+    },
+    closeAddStdDialog() {
+      this.addStdDialog = false;
+    },
+    commitAddStdForm() {
+      const stdList = [
+        ...this.$refs.treeRef.getCheckedKeys()
+      ]
+      this.$http.post('admin/addCourseStd',stdList,{params:{course_id:this.course_id}}).then(({data:res})=>{
+        if(res.status !== 200){
+          return this.$message.error('向该课程新增学生失败');
+        } else {
+          this.$message.success('向该课程新增学生成功');
+          this.addStdDialog = false;
+          this.getCourseList();
+        }
+      })
     },
     commitEditForm() {
       this.$refs.editRef.validate((valid) => {
@@ -291,7 +441,7 @@ export default {
   }
   .el-card {
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15) !important;
-    .el-table {
+    .courseTable {
       margin-top: 30px;
     }
     .el-pagination {

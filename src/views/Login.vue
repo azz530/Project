@@ -105,6 +105,7 @@ export default {
           
           window.sessionStorage.setItem("token", res.token); //将token存储到sessionStorage
           let userInfo = jwtDecode(res.token);
+          console.log(userInfo);
           this.$store.commit('setUserInfo',{
             username:userInfo.username,
             id:userInfo.id,
@@ -113,7 +114,6 @@ export default {
             avatar:userInfo.avatar,
             usersign:userInfo.usersign
           });
-          console.log(userInfo);
           if(userInfo.identity === '老师'){
             this.$router.push("/teacher");
           } else if(userInfo.identity === '家长' || userInfo.identity === '学生') {

@@ -4,7 +4,7 @@ import { Button,Form,FormItem,Input,Message,Container,
     MenuItem,Carousel,CarouselItem,Breadcrumb,BreadcrumbItem,
     Card,Dropdown,DropdownMenu,DropdownItem,Table,TableColumn,
     Avatar,Row,Col,Select,Option,Switch,Pagination,Upload,Dialog,
-    Tooltip,DatePicker,MessageBox,Tag,Timeline,TimelineItem,Collapse, CollapseItem,Tabs, TabPane, Rate, Divider, Progress, Calendar, TimeSelect } from 'element-ui'
+    Tooltip,DatePicker,MessageBox,Tag,Timeline,TimelineItem,Collapse, CollapseItem,Tabs, TabPane, Rate, Divider, Progress, Calendar, TimeSelect, Tree, Popover } from 'element-ui'
 
 Vue.use(Button)
 Vue.use(Form)
@@ -52,5 +52,7 @@ Vue.use(Divider)
 Vue.use(Progress)
 Vue.use(Calendar)
 Vue.use(TimeSelect)
+Vue.use(Tree)
+Vue.use(Popover)
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

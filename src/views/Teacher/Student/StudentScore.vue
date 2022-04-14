@@ -4,18 +4,7 @@
       <el-breadcrumb-item>学生成绩</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card class="box-card">
-      <el-dropdown split-button type="primary" @command="classChoose">
-        {{ classChose }}
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item
-            v-for="item in classArr"
-            :key="item.class_id"
-            :command="item.class_id"
-            >{{ item.class_name }}</el-dropdown-item
-          >
-        </el-dropdown-menu>
-      </el-dropdown>
-      <el-table border style="width: 100%" :data="ScoreList">
+      <el-table border style="width: 100%" :data="ExamList">
         <el-table-column
           type="index"
           label="序号"
@@ -24,45 +13,41 @@
           align="center"
         ></el-table-column>
         <el-table-column
-          label="学号"
-          prop="student_id"
+          label="考试号"
+          prop="exam_id"
           fixed
           align="center"
         ></el-table-column>
         <el-table-column
-          label="姓名"
-          prop="student_name"
+          label="考试名称"
+          prop="exam_name"
+          fixed
           align="center"
         ></el-table-column>
         <el-table-column
-          label="班级"
-          prop="class_name"
+          label="考试信息"
+          prop="exam_message"
           align="center"
         ></el-table-column>
-        <el-table-column
-          label="科目"
-          prop="course_name"
-          align="center"
-        ></el-table-column>
-        <el-table-column
-          label="成绩"
-          prop="score"
-          align="center"
-        ></el-table-column>
-        <el-table-column label="操作" prop="" width="250px" align="center">
+        <el-table-column label="考试时间" prop="" align="center">
+          <template v-slot="scope">
+            {{ scope.row.start_time }} ~ {{ scope.row.end_time }}
+          </template>
+        </el-table-column>
+        <el-table-column label="成绩录入" prop="" width="250px" align="center">
           <template v-slot="scope">
             <el-tooltip
               class="item"
               effect="dark"
-              content="修改成绩"
+              content="成绩录入"
               placement="top"
               :enterable="false"
             >
               <el-button
                 type="primary"
-                icon="el-icon-edit"
-                @click="changeScore(scope.row)"
-              ></el-button>
+                @click="editExamScore(scope.row.exam_id)"
+                >成绩录入</el-button
+              >
             </el-tooltip>
           </template>
         </el-table-column>
@@ -78,6 +63,7 @@
       >
       </el-pagination>
     </el-card>
+
     <el-dialog
       title="修改成绩"
       :visible.sync="isShow"
@@ -86,12 +72,98 @@
     >
       <el-input
         oninput="value=value.replace(/[^0-9.]/g,'')"
-        v-model="StdScore"
+        v-model="Score"
         placeholder="请输入成绩"
       ></el-input>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="changeStdScore">确 定</el-button>
         <el-button @click="isShow = false">取 消</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      title="录入成绩"
+      :visible.sync="ExamScoreDialog"
+      width="50%"
+      @close="closeExamScoreDialog"
+    >
+      <el-card>
+        <el-dropdown split-button type="primary" @command="classChoose">
+          {{ classChose }}
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item
+              v-for="item in classArr"
+              :key="item.class_id"
+              :command="item.class_id"
+              >{{ item.class_name }}
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+        <el-table border style="width: 100%" :data="StudentList">
+          <el-table-column
+            type="index"
+            label="序号"
+            fixed
+            width="100px"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="学号"
+            prop="student_id"
+            fixed
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="姓名"
+            prop="student_name"
+            fixed
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="班级"
+            prop="class_name"
+            fixed
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            label="性别"
+            prop="sex"
+            align="center"
+          ></el-table-column>
+          <el-table-column label="成绩" prop="score" align="center">
+          </el-table-column>
+          <el-table-column label="成绩录入" prop="" align="center">
+            <template v-slot="scope">
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="成绩录入"
+                placement="top"
+                :enterable="false"
+              >
+                <el-button
+                  type="primary"
+                  icon="el-icon-thumb"
+                  @click="changeScore(scope.row)"
+                ></el-button>
+              </el-tooltip>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination
+          @size-change="handleSmallSizeChange"
+          @current-change="handleSmallCurrentChange"
+          :current-page="smallPageInfo.currentPage"
+          :page-sizes="[5, 10]"
+          :page-size="smallPageInfo.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="smallPageInfo.total"
+        >
+        </el-pagination>
+      </el-card>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="ExamScoreDialog = false">关闭</el-button>
       </div>
     </el-dialog>
   </div>
@@ -102,7 +174,8 @@ export default {
   data() {
     return {
       classChose: "班级选择",
-      ScoreList: [],
+      ExamList: [],
+      StudentList: [],
       pageInfo: {
         pageNum: 1,
         pageSize: 5,
@@ -110,14 +183,18 @@ export default {
       },
       classArr: [],
       isShow: false,
-      StdScore: null,
-      Sid: null,
-      CourseId:null,
+      ScoreForm: {},
+      Score: null,
+      ExamScoreDialog: false,
+      smallPageInfo: {
+        currentPage: 1,
+        pageSize: 6,
+        total: 0,
+      },
     };
   },
   created() {
-    this.getScoreList();
-    this.getClass();
+    this.getExamList();
   },
   methods: {
     getClass() {
@@ -133,12 +210,29 @@ export default {
           }
         });
     },
-    getScoreList() {
+    getExamList() {
       this.$http
-        .get("teacher/getStdScore", {
+        .get("admin/getExamInfo", {
           params: {
             pageNum: this.pageInfo.pageNum,
             pageSize: this.pageInfo.pageSize,
+          },
+        })
+        .then(({ data: res }) => {
+          if (res.status !== 200) {
+            return this.$message.error("暂无考试信息");
+          } else {
+            this.ExamList = res.data;
+            this.pageInfo.total = res.total;
+          }
+        });
+    },
+    getStudentList() {
+      this.$http
+        .get("teacher/getStdScore", {
+          params: {
+            pageNum: this.smallPageInfo.currentPage,
+            pageSize: this.smallPageInfo.pageSize,
             teacher_id: this.$store.state.userInfo.identity_id,
           },
         })
@@ -146,8 +240,8 @@ export default {
           if (res.status !== 200) {
             return this.$message.error("获取学生列表失败");
           } else {
-            this.ScoreList = res.data;
-            this.pageInfo.total = res.total;
+            this.StudentList = res.data;
+            this.smallPageInfo.total = res.total;
           }
         });
     },
@@ -156,18 +250,17 @@ export default {
         .get("teacher/getClassStdScore", {
           params: {
             class_id: command,
-            pageNum: this.pageInfo.pageNum,
-            pageSize: this.pageInfo.pageSize,
+            pageNum: this.smallPageInfo.currentPage,
+            pageSize: this.smallPageInfo.pageSize,
             teacher_id: this.$store.state.userInfo.identity_id,
           },
         })
         .then(({ data: res }) => {
-          console.log(res);
           if (res.status !== 200) {
             return this.$message.error("获取学生信息失败");
           } else {
-            this.ScoreList = res.data;
-            this.pageInfo.total = res.total;
+            this.StudentList = res.data;
+            this.smallPageInfo.total = res.total;
           }
         });
     },
@@ -183,30 +276,43 @@ export default {
     },
     changeScore(data) {
       this.isShow = true;
-      this.Sid = data.student_id;
-      this.StdScore = data.score;
-      this.CourseId = data.course_id;
+      this.ScoreForm.student_id = data.student_id;
+      this.ScoreForm.course_id = data.course_id;
+      this.Score = data.score;
     },
     closeDialog() {
       this.isShow = false;
     },
+    closeExamScoreDialog() {
+      this.ExamScoreDialog = false;
+    },
+    editExamScore(id) {
+      this.ExamScoreDialog = true;
+      this.getStudentList();
+      this.getClass();
+      this.ScoreForm.exam_id = id;
+    },
     changeStdScore() {
+      this.ScoreForm.score = this.Score;
       this.$http
-        .put("teacher/changeStdScore", {
-          student_id: this.Sid,
-          score: this.StdScore,
-          course_id:this.CourseId,
-        })
+        .put("teacher/changeStdScore", this.ScoreForm)
         .then(({ data: res }) => {
-          console.log(res);
           if (res.status !== 200) {
             return this.$message.error("修改失败");
           } else {
             this.$message.success("修改成功");
             this.isShow = false;
-            this.getScoreList();
+            this.getStudentList();
           }
         });
+    },
+    handleSmallSizeChange(size){
+      this.smallPageInfo.pageSize = size;
+      this.getStudentList();
+    },
+    handleSmallCurrentChange(page) {
+      this.smallPageInfo.currentPage = page;
+      this.getStudentList();
     },
   },
 };

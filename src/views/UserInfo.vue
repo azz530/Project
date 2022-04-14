@@ -2,77 +2,13 @@
   <div class="container">
     <Header :avatar="userInfo.avatar"></Header>
     <div class="main_container">
-      <el-card class="userMessage-card">
-        <el-row type="flex">
-          <el-card class="homework">
-            <div class="homeworkTitle">作业信息</div>
-            <div class="homeworkContent">
-              <el-timeline>
-                <el-timeline-item
-                  v-for="item in HomeWorkList"
-                  :key="item.work_id"
-                  :timestamp="item.work_time"
-                  placement="top"
-                  @click.native="openWorkDetails(item.work_id)"
-                >
-                  <el-card>
-                    <p class="course_name">科目:{{item.course_name}}</p>
-                    <h4>{{ item.work_name }}</h4>
-                    <p>期限:{{ item.work_deadline }}天</p>
-                    <span
-                      >{{ item.teacher_name }}发布于{{
-                        item.details_time
-                      }}</span
-                    >
-                  </el-card>
-                </el-timeline-item>
-              </el-timeline>
-            </div>
-          </el-card>
-          <el-card class="notice">
-            <div class="noticeTitle">老师通知</div>
-            <div class="noticeContent">
-              <el-timeline>
-                <el-timeline-item
-                  v-for="item in Notice"
-                  :key="item.notice_id"
-                  :timestamp="item.notice_time"
-                  placement="top"
-                  @click.native="openNoticeDetails(item)"
-                >
-                  <el-card>
-                    <h4>{{ item.notice_theme }}</h4>
-                    <p>{{ item.notice_details }}</p>
-                    <span
-                      >{{ item.teacher_name }}发布于{{
-                        item.details_time
-                      }}</span
-                    >
-                  </el-card>
-                </el-timeline-item>
-              </el-timeline>
-            </div>
-          </el-card>
-        </el-row>
-        <el-row>
-          <el-card class="score">
-            <div class="text">学习成绩
-              <Echarts :propData="StuendScorePropData" id="Test" class="student_score"></Echarts>
-            </div>
-            
-          </el-card>
-        </el-row>
-      </el-card>
       <el-card class="userInfo-card">
         <i class="el-icon-setting" @click="editUserInfo"></i>
         <div class="userInfo">
-          <el-avatar
-            :size="150"
-            :src="userInfo.avatar"
-          ></el-avatar>
+          <el-avatar :size="150" :src="userInfo.avatar"></el-avatar>
           <el-upload
             ref="upload"
-            action='http://127.0.0.1:3000/my/uploadAvatar'
+            action="http://127.0.0.1:3000/my/uploadAvatar"
             :before-upload="beforeAvatarUpload"
             :on-success="handleSuccess"
             :show-file-list="false"
@@ -158,7 +94,149 @@
           </div>
         </div>
       </el-card>
+      <el-card
+        class="userMessage-card"
+        v-if="$store.state.userInfo.identity === '学生' ? true : false"
+      >
+        <el-tabs v-model="activeName" @tab-click="handleClick">
+          <el-tab-pane label="作业信息" name="first">
+            <div class="homework">
+              <div
+                class="homeworkItem"
+                v-for="item in HomeWorkList"
+                :key="item.work_id"
+              >
+                <div class="workTitle">{{ item.work_name }}</div>
+                <div class="workContent">{{ item.work_details }}</div>
+                <div class="workDeadline">期限:{{ item.work_deadline }}天</div>
+                <div class="workMessage">
+                  <p class="teacher">{{ item.teacher_name }}</p>
+                  发布于
+                  <p class="time">{{ item.work_time }}</p>
+                </div>
+                <el-button
+                  type="primary"
+                  @click="openWorkDetails(item.work_id)"
+                  size="mini"
+                  >提交作业</el-button
+                >
+                <el-divider></el-divider>
+              </div>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="老师通知" name="second">
+            <div class="notice">
+              <div
+                class="noticeItem"
+                v-for="item in Notice"
+                :key="item.notice_id"
+              >
+                <div class="theme">{{ item.notice_theme }}</div>
+                <div class="content">{{ item.notice_details }}</div>
+
+                <div class="noticeMessage">
+                  <p class="teacher">{{ item.teacher_name }}</p>
+                  发布于
+                  <p class="time">{{ item.details_time }}</p>
+                </div>
+                <el-divider></el-divider>
+              </div>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="老师评价" name="third">
+            <div class="evaluate">
+              <div class="evaluateItem" v-for="item in EvaList" :key="item.id">
+                <div class="content">{{ item.content }}</div>
+
+                <div class="courseStars">
+                  课堂表现:
+                  <el-rate
+                    v-model="item.course_stars"
+                    :colors="colors"
+                    :disabled="true"
+                  ></el-rate>
+                </div>
+                <div class="workStars">
+                  作业表现:
+                  <el-rate
+                    v-model="item.work_stars"
+                    :colors="colors"
+                    :disabled="true"
+                  ></el-rate>
+                </div>
+                <div class="thinkStars">
+                  思想表现:
+                  <el-rate
+                    v-model="item.think_stars"
+                    :colors="colors"
+                    :disabled="true"
+                  ></el-rate>
+                </div>
+                <div class="evaluateMessage">
+                  <div class="teacher">{{ item.teacher_name }}</div>
+                  <div class="time">{{ item.public_time }}</div>
+                </div>
+                <el-divider></el-divider>
+              </div>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="考试成绩" name="fourth">
+            <div class="score">
+              <div
+                class="scoreItem"
+                v-for="item in ExamList"
+                :key="item.exam_id"
+              >
+                <div class="examTitle">
+                  {{ item.exam_name }}
+                </div>
+                <div class="examContent">
+                  {{ item.exam_message }}
+                </div>
+                <div class="footer">
+                  <el-button
+                    type="primary"
+                    round
+                    size="mini"
+                    @click="openExamScore(item.exam_id)"
+                    >查看成绩</el-button
+                  >
+                  <p>考试时间:{{ item.start_time }}~{{ item.end_time }}</p>
+                </div>
+                <el-divider></el-divider>
+              </div>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="日程安排" name="fifth">
+            <div class="activity">
+              <el-calendar v-model="nowDate">
+                <template slot="dateCell" slot-scope="{ data }">
+                  <div class="day" @click="editTest(data.day)">
+                    {{ data.day.split("-").slice(2)[0] }}
+                    <div
+                      class="activity"
+                      v-for="item in calendarData"
+                      :key="item.id"
+                    >
+                      <div v-if="item.actime.indexOf(data.day) > -1">
+                        {{ item.name }}
+                      </div>
+                    </div>
+                  </div>
+                </template>
+              </el-calendar>
+            </div>
+          </el-tab-pane>
+        </el-tabs>
+      </el-card>
+      <el-card
+        class="parentsCard"
+        v-if="$store.state.userInfo.identity === '家长' ? true : false"
+      >
+        <div class="search"></div>
+      </el-card>
     </div>
+
     <el-dialog
       title="修改个人信息"
       :visible.sync="editDialog"
@@ -214,55 +292,6 @@
     </el-dialog>
 
     <el-dialog
-      title="请确认学号"
-      :visible.sync="checkDialog"
-      width="35%"
-      @close="closeCheckDialog"
-    >
-      <el-form
-        :model="checkForm"
-        :rules="checkFormRules"
-        label-width="50px"
-        ref="checkRef"
-      >
-        <el-form-item label="学号" label-width="80px" prop="identity_id">
-          <el-input
-            v-model="checkForm.identity_id"
-            class="input_short"
-          ></el-input>
-          <el-button type="primary" round @click="checkIdentity"
-            >确认学号</el-button
-          >
-        </el-form-item>
-        <el-form-item label="姓名" label-width="80px">
-          <el-input
-            v-model="checkForm.student_name"
-            class="input_short"
-            disabled
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="班级" label-width="80px">
-          <el-input
-            v-model="checkForm.class_name"
-            class="input_short"
-            disabled
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="年级" label-width="80px">
-          <el-input
-            v-model="checkForm.grade_name"
-            class="input_short"
-            disabled
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="commitCheckForm">确 定</el-button>
-        <el-button @click="checkDialog = false">取 消</el-button>
-      </div>
-    </el-dialog>
-
-    <el-dialog
       class="workDialog"
       title="提交作业"
       :visible.sync="workDialog"
@@ -303,7 +332,12 @@
           <div class="work_pic">
             <el-row type="flex">
               <el-col>
-                <img v-for="item in workForm.pic" :key="item" :src="item" alt="" />
+                <img
+                  v-for="item in workForm.pic"
+                  :key="item"
+                  :src="item"
+                  alt=""
+                />
               </el-col>
             </el-row>
           </div>
@@ -328,7 +362,10 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="commitWorkForm(workForm)" :disabled="this.workForm.work_status?true:false"
+        <el-button
+          type="primary"
+          @click="commitWorkForm(workForm)"
+          :disabled="this.workForm.work_status ? true : false"
           >确 定</el-button
         >
         <el-button @click="workDialog = false">取 消</el-button>
@@ -336,27 +373,62 @@
     </el-dialog>
 
     <el-dialog
-      class="noticeDialog"
-      :visible.sync="noticeDialog"
-      title="班级公告"
-      width="35%"
-      @close="closeNDialog"
-      z-index="1000"
+      class="scoreDialog"
+      :visible.sync="scoreDialog"
+      title="查看成绩"
+      width="40%"
+      @close="closeScoreDialog"
     >
-      <div class="noticeTitle">{{NoticeDetails.notice_theme}}</div>
-      <div class="noticeContent">{{NoticeDetails.notice_details}}</div>
-      <div class="noticeAuthor">{{NoticeDetails.teacher_name}}</div>
+      <div class="scoreEcharts">
+        <Echarts
+          :propData="StuendScorePropData"
+          id="Test"
+          class="student_score"
+        ></Echarts>
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      title="新增活动"
+      :visible.sync="activityDialog"
+      width="35%"
+      @close="closeactivityDialog"
+    >
+      <el-form
+        :model="activityForm"
+        :rules="activityFormRules"
+        label-width="50px"
+        ref="activityRef"
+      >
+        <el-form-item label="活动名" label-width="80px" prop="name">
+          <el-input v-model="activityForm.name" class="input_short"></el-input>
+        </el-form-item>
+        <el-form-item label="活动时间" label-width="80px" prop="actime">
+          <el-date-picker
+            v-model="activityForm.actime"
+            type="date"
+            placeholder="选择日期"
+            format="yyyy 年 MM 月 dd 日"
+            value-format="yyyy-MM-dd"
+          >
+          </el-date-picker>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="commitactivityForm">确 定</el-button>
+        <el-button @click="activityDialog = false">取 消</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import Header from "../components/Header.vue";
-import Echarts from '../components/EchartsPic/Echarts.vue'
+import Echarts from "../components/EchartsPic/Echarts.vue";
 export default {
   components: {
     Header,
-    Echarts
+    Echarts,
   },
   data() {
     const validateNum = (rule, value, callback) => {
@@ -406,26 +478,18 @@ export default {
         ],
         address: [{ required: true, message: "请输入地址", trigger: "blur" }],
       },
-      checkDialog: false,
-      checkForm: {
-        identity_id: "",
-        class_name: "",
-        grade_name: "",
-        student_name: "",
-      },
-      checkFormRules: {
-        identity_id: [
-          { required: true, validator: validateNum, trigger: "blur" },
-        ],
-      },
       Notice: {},
       HomeWorkList: {},
       workDialog: false,
       workForm: {},
       workFormRules: {
-        work_content:[{
-          required:true,message:'请输入内容',trigger:'blur'
-        }]
+        work_content: [
+          {
+            required: true,
+            message: "请输入内容",
+            trigger: "blur",
+          },
+        ],
       },
       dialogVisible: false,
       showPicList: [],
@@ -433,21 +497,27 @@ export default {
       dialogImageUrl: "",
       pictureList: [],
       ShowUploadPic: true,
-      noticeDialog:false,
-      NoticeDetails:{},
-      StuendScorePropData:this.$EchartsOption.studentScoreBar(),
+      StuendScorePropData: this.$EchartsOption.studentScoreBar(),
+      ExamList: [],
+      scoreDialog: false,
+      EvaList: [],
+      activeName: "first",
+      colors: ["#99A9BF", "#F7BA2A", "#FF9900"],
+      nowDate: new Date(),
+      calendarData: [],
+      activityDialog: false,
+      activityForm: {},
+      activityFormRules: {
+        name: [{ required: true, message: "请输入活动名称", trigger: "blur" }],
+        actime: [{ required: true, message: "请选择时间", trigger: "blur" }],
+      },
     };
   },
   created() {
     this.getUserInfo();
-    this.getNotice();
-    this.getHomeWork();
-  },
-  mounted(){
-    this.getScoreData();
-  },
-  beforeUpdate() {
-    this.checkUserId();
+    if (this.$store.state.userInfo.identity === "学生") {
+      this.getHomeWork();
+    }
   },
   methods: {
     getUserInfo() {
@@ -464,6 +534,54 @@ export default {
             if (tags) {
               this.userTags = tags.split(",");
             }
+          }
+        });
+    },
+    getNotice() {
+      this.$http
+        .get("my/getNotice", {
+          params: { student_id: this.$store.state.userInfo.identity_id },
+        })
+        .then(({ data: res }) => {
+          if (res.status !== 200) {
+            return this.$message.error("获取班级公告失败");
+          } else {
+            this.Notice = res.data;
+          }
+        });
+    },
+    getHomeWork() {
+      this.$http
+        .get("my/getHomeWork", {
+          params: { student_id: this.$store.state.userInfo.identity_id },
+        })
+        .then(({ data: res }) => {
+          if (res.status !== 200) {
+            return this.$message.error("获取作业信息失败");
+          } else {
+            this.HomeWorkList = res.data;
+          }
+        });
+    },
+    getExamList() {
+      this.$http.get("my/getExamInfo").then(({ data: res }) => {
+        if (res.status !== 200) {
+          return this.$message.error("暂无考试信息");
+        } else {
+          this.ExamList = res.data;
+        }
+      });
+    },
+    getEvaList() {
+      this.$http
+        .get("my/getStdEva", {
+          params: { student_id: this.$store.state.userInfo.identity_id },
+        })
+        .then(({ data: res }) => {
+          if (res.status !== 200) {
+            return this.$message.error("获取老师评价失败");
+          } else {
+            this.EvaList = res.data;
           }
         });
     },
@@ -526,7 +644,6 @@ export default {
             }
           )
           .then(({ data: res }) => {
-            console.log(res);
             if (res.status !== 200) {
               if (res.status === 402) {
                 return this.$message.error("该标签已存在");
@@ -541,7 +658,7 @@ export default {
       this.inputVisible = false;
       this.inputValue = "";
     },
-
+    //修改用户信息
     editUserInfo() {
       this.editDialog = true;
       this.editForm.username = this.userInfo.username;
@@ -572,91 +689,12 @@ export default {
         }
       });
     },
-    closeCheckDialog() {
-      this.$refs.checkRef.resetFields();
-      this.checkDialog = false;
-    },
-    checkUserId() {
-      if (this.userInfo.identity === "student") {
-        if (
-          this.userInfo.identity_id === "" ||
-          this.userInfo.identity_id === null
-        ) {
-          this.checkDialog = true;
-        } else {
-          this.checkDialog = false;
-        }
-      }
-    },
-    checkIdentity() {
-      if (this.checkForm.identity_id) {
-        this.$http
-          .get("my/checkIdentity", {
-            params: { student_id: this.checkForm.identity_id },
-          })
-          .then(({ data: res }) => {
-            if (res.status !== 200) {
-              if (res.status === 402) {
-                return this.$message.error("该学号已被绑定");
-              }
-              return this.$message.error("认证失败");
-            } else {
-              this.$message.success("认证成功");
-              this.checkForm.class_name = res.data.class_name;
-              this.checkForm.grade_name = res.data.grade_name;
-              this.checkForm.student_name = res.data.student_name;
-            }
-          });
-      } else {
-        return this.$message.error("请输入学号");
-      }
-    },
-    commitCheckForm() {
-      this.$refs.checkRef.validate((valid) => {
-        if (valid) {
-          this.$http
-            .put("my/commitIDResult", this.checkForm, {
-              params: { id: this.id },
-            })
-            .then(({ data: res }) => {
-              if (res.status !== 200) {
-                return this.$message.error("确认学号失败");
-              } else {
-                this.$message.success("确认学号成功");
-                this.checkDialog = false;
-                this.$router.go(0);
-              }
-            });
-        }
-      });
-    },
 
-    getNotice() {
-      this.$http
-        .get("my/getNotice", { params: { student_id: this.$store.state.userInfo.identity_id } })
-        .then(({ data: res }) => {
-          if (res.status !== 200) {
-            return this.$message.error("获取班级公告失败");
-          } else {
-            this.Notice = res.data;
-          }
-        });
-    },
-    getHomeWork() {
-      this.$http
-        .get("my/getHomeWork", { params: { student_id: this.$store.state.userInfo.identity_id } })
-        .then(({ data: res }) => {
-          if (res.status !== 200) {
-            return this.$message.error("获取作业信息失败");
-          } else {
-            this.HomeWorkList = res.data;
-          }
-        });
-    },
     closeWorkDialog() {
       this.workDialog = false;
       this.ShowUploadPic = false;
     },
+    //作业详情及提交
     openWorkDetails(id) {
       this.workDialog = true;
       this.ShowUploadPic = true;
@@ -670,12 +708,28 @@ export default {
             if (res.data.work_pic) {
               this.workForm.pic = res.data.work_pic.split(",");
             }
-            if(res.data.work_status){
-              return this.$message.warning('你已提交该作业');
+            if (res.data.work_status) {
+              return this.$message.warning("你已提交该作业");
             }
           }
         });
     },
+    handlePicChange(file, fileList) {
+      this.pictureList = fileList;
+    },
+    beforePicUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
+    },
+    handleRemove(file) {},
     commitWorkForm() {
       let work = new FormData();
       work.append("work_id", this.workForm.work_id);
@@ -696,44 +750,100 @@ export default {
         }
       });
     },
-    handlePicChange(file, fileList) {
-      this.pictureList = fileList;
-    },
-    beforePicUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
 
-      if (!isJPG) {
-        this.$message.error("上传头像图片只能是 JPG 格式!");
-      }
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
-      }
-      return isJPG && isLt2M;
+    closeScoreDialog() {
+      this.scoreDialog = false;
     },
-    handleRemove(file) {},
-    closeNDialog(){
-      this.noticeDialog = false;
+    //查看成绩事件
+    openExamScore(id) {
+      this.scoreDialog = true;
+      this.$http
+        .get("my/getScoreData", {
+          params: {
+            student_id: this.$store.state.userInfo.identity_id,
+            exam_id: id,
+          },
+        })
+        .then(({ data: res }) => {
+          if (res.status !== 200) {
+            if (res.status === 402) {
+              return this.$message.error("暂无成绩");
+            }
+            return this.$message.error("获取成绩信息失败");
+          } else {
+            console.log(res);
+            const courseArr = res.data.map((item) => {
+              return item.course_name;
+            });
+            const scoreArr = res.data.map((item) => {
+              return item.score;
+            });
+            this.StuendScorePropData.xAxis.data = courseArr;
+            this.StuendScorePropData.series[0].data = scoreArr;
+          }
+        });
     },
-    openNoticeDetails(data){
-      this.noticeDialog = true;
-      this.NoticeDetails = data;
+    getActivity() {
+      this.$http
+        .get("my/getActivity", {
+          params: { id: this.$store.state.userInfo.id },
+        })
+        .then(({ data: res }) => {
+          if (res.status !== 200) {
+            return this.$message.error("未添加安排");
+          } else {
+            this.calendarData = res.data;
+          }
+        });
     },
-    getScoreData(){  
-      this.$http.get('my/getScoreData',{params:{student_id:this.$store.state.userInfo.identity_id}}).then(({data:res})=>{
-        if(res.status !== 200){
-          return this.$message.error('获取成绩信息失败');
-        } else {
-          const courseArr = res.data.map((item)=>{
-            return item.course_name;
-          })
-          const scoreArr = res.data.map((item)=>{
-            return item.score;
-          })
-          this.StuendScorePropData.xAxis.data = courseArr;
-          this.StuendScorePropData.series[0].data = scoreArr;
+    editTest(day) {
+      let status = false;
+      this.calendarData.map((i) => {
+        if (i.actime === day) {
+          status = true;
         }
-      })
+      });
+      if (status) {
+        this.$message.error("该天已安排活动");
+      } else {
+        this.activityDialog = true;
+        this.activityForm.actime = day;
+      }
+    },
+    closeactivityDialog() {
+      this.activityDialog = false;
+    },
+    commitactivityForm() {
+      this.$refs.activityRef.validate((valid) => {
+        if (valid) {
+          this.$http
+            .post("my/addActivity", this.activityForm, {
+              params: { id: this.$store.state.userInfo.id },
+            })
+            .then(({ data: res }) => {
+              if (res.status !== 200) {
+                return this.$message.error("新增活动失败");
+              } else {
+                this.$message.success("新增活动成功");
+                this.activityDialog = false;
+                this.getActivity();
+              }
+            });
+        }
+      });
+    },
+
+    //tabs点击获取相关页数据
+    handleClick(tab, event) {
+      if (tab.name === "second") {
+        this.getNotice();
+      } else if (tab.name === "third") {
+        this.getEvaList();
+      } else if (tab.name === "fourth") {
+        this.getExamList();
+      } else if (tab.name === "fifth") {
+        this.getActivity();
+      }
     },
   },
 };
@@ -743,104 +853,165 @@ export default {
 .container {
   margin: 0;
   padding: 0;
-  position: relative;
   .main_container {
     display: flex;
     .userMessage-card {
+      width: 1350px;
       margin-top: 20px;
-      margin-left: 20px;
+      margin-left: 50px;
       display: flex;
-      .homework {
-        width: 450px;
-        max-height: 430px;
-        cursor: pointer;
-        .homeworkTitle {
-          margin-top: 5px;
-          font-size: 22px;
-        }
-        .homeworkContent {
-          margin-top: 20px;
-          .el-card {
-            min-height: 70px;
-            position: relative;
-            .course_name{
-              font-size: 14px;
-              position: absolute;
-              left: 4px;
-              top: 4px;
-              color: rgb(66, 66, 248);
-            }
-            p {
-              position: absolute;
-              right: 4px;
-              top: 4px;
-            }
-            span {
-              position: absolute;
-              right: 4px;
-              bottom: 4px;
-              margin-left: 30px;
-              font-weight: 300;
-              font-size: 10px;
-            }
-            .el-icon-check{
-              position: absolute;
-              right: 4px;
-              bottom: 25px;
+      .el-tabs {
+        width: 1300px;
+        .el-tab-pane {
+          width: 1300px;
+          .homework {
+            padding: 30px;
+            .homeworkItem {
+              padding: 15px;
+              .workTitle {
+                font-size: 20px;
+                font-weight: 600;
+              }
+              .workContent {
+                margin-top: 20px;
+                font-size: 16px;
+                font-weight: 400;
+              }
+              .workMessage {
+                position: relative;
+                right: -980px;
+                font-size: 14px;
+                display: flex;
+                margin-top: 20px;
+                .teacher {
+                  color: rgb(115, 115, 252);
+                  margin-right: 3px;
+                }
+                .time {
+                  margin-left: 3px;
+                }
+              }
+              .workDeadline {
+                margin-top: 10px;
+              }
             }
           }
-        }
-        &:hover {
-          overflow-y: auto;
-        }
-      }
-      .notice {
-        min-width: 900px;
-        max-width: 1000px;
-        max-height: 430px;
-        margin-left: 20px;
-        position: relative;
-        cursor: pointer;
-        .noticeTitle {
-          margin-top: 5px;
-          font-size: 22px;
-        }
-        .noticeContent {
-          margin-top: 20px;
-          p {
-            margin-left: 10px;
-            margin-top: 5px;
-            font-size: 12px;
-            font-weight: 400;
-            color: rgb(2, 2, 2);
+          .notice {
+            padding: 30px;
+            .noticeItem {
+              padding: 15px;
+              .theme {
+                font-size: 20px;
+                font-weight: 600;
+              }
+              .content {
+                text-indent: 2em;
+                margin-top: 20px;
+                font-size: 16px;
+                font-weight: 400;
+              }
+              .noticeMessage {
+                position: relative;
+                right: -980px;
+                font-size: 14px;
+                display: flex;
+                margin-top: 10px;
+                .teacher {
+                  color: rgb(115, 115, 252);
+                  margin-right: 3px;
+                }
+                .time {
+                  margin-left: 3px;
+                }
+              }
+            }
           }
-          span {
-            position: absolute;
-            bottom: 4px;
-            right: 10px;
-            font-size: 12px;
-            font-weight: 300;
+          .evaluate {
+            padding: 30px;
+            .evaluateItem {
+              .courseStars {
+                padding-top: 20px;
+                padding-left: 10px;
+                display: flex;
+                .el-rate {
+                  margin-left: 10px;
+                }
+              }
+              .workStars {
+                padding-top: 10px;
+                padding-left: 10px;
+                display: flex;
+                .el-rate {
+                  margin-left: 10px;
+                }
+              }
+              .thinkStars {
+                padding-top: 10px;
+                padding-left: 10px;
+                display: flex;
+                .el-rate {
+                  margin-left: 10px;
+                }
+              }
+              .evaluateMessage {
+                display: flex;
+                position: relative;
+                right: -1000px;
+              }
+            }
           }
-        }
-        &:hover {
-          overflow-y: auto;
-        }
-      }
-      .score{
-        margin-top: 30px;
-        .student_score{
-          width: 100%;
-          height: 600px;
+          .score {
+            padding: 30px;
+            .scoreItem {
+              .examTitle {
+                font-size: 22px;
+                font-weight: 600;
+              }
+              .examContent {
+                text-indent: 2em;
+                margin-top: 20px;
+                font-size: 16px;
+                font-weight: 400;
+              }
+              .footer {
+                position: relative;
+                right: -1000px;
+              }
+            }
+          }
+          .activity {
+            .el-calendar {
+              width: 100%;
+              .day {
+                height: 100%;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+                .activity {
+                  position: absolute;
+                  left: 0;
+                  top: 0;
+                  color: rgb(15, 88, 247);
+                  font-size: 16px;
+                }
+              }
+            }
+          }
         }
       }
     }
+    .parentsCard {
+      margin-top: 20px;
+      margin-left: 20px;
+      display: flex;
+    }
     .userInfo-card {
       width: 400px;
-      height: 60vh;
+      max-height: 70vh;
       margin-top: 20px;
       margin-left: 30px;
-      position: fixed;
-      right: 20px;
       .el-icon-setting {
         cursor: pointer;
       }
@@ -922,24 +1093,31 @@ export default {
       }
     }
   }
-  .noticeDialog{
-    .noticeTitle{
+  .noticeDialog {
+    .noticeTitle {
       text-align: center;
       font-size: 30px;
       font-weight: 800;
     }
-    .noticeContent{
+    .noticeContent {
       text-indent: 1cm;
       margin-top: 30px;
       font-size: 20px;
       font-weight: 400;
       color: black;
     }
-    .noticeAuthor{
+    .noticeAuthor {
       margin-top: 20px;
       font-size: 20px;
       font-weight: 600;
       text-align: right;
+    }
+  }
+  .scoreDialog {
+    .scoreEcharts {
+      margin: 0 auto;
+      height: 400px;
+      width: 500px;
     }
   }
 }

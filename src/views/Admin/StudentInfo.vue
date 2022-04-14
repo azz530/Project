@@ -378,6 +378,7 @@ export default {
       });
     },
     closeEditStdDialog() {
+      this.editStdDialog = false;
       this.$refs.editStdRef.resetFields();
     },
     editStd(data) {

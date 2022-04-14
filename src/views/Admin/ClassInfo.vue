@@ -95,7 +95,7 @@
         </el-table>
 
         <el-pagination
-          @current-change="handleCurrentChange"
+          @current-change="handleSmallCurrentChange"
           :current-page="smallPageInfo.currentPage"
           small
           layout="prev, pager, next"
@@ -169,7 +169,7 @@ export default {
     },
     getClassStd(class_id) {
       this.$http
-        .get("admin/getClassStd", {
+        .get("admin/getClassStudent", {
           params: {
             pageNum: this.smallPageInfo.currentPage,
             pageSize: this.smallPageInfo.pageSize,
@@ -177,7 +177,6 @@ export default {
           },
         })
         .then(({ data: res }) => {
-          console.log(res);
           if (res.status !== 200) {
             return this.$message.error("获取班级学生失败");
           } else {
@@ -186,7 +185,7 @@ export default {
           }
         });
     },
-    handleCurrentChange(page) {
+    handleSmallCurrentChange(page) {
       this.smallPageInfo.currentPage = page;
       this.getClassStd(this.class_id);
     },

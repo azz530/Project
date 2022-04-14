@@ -58,13 +58,13 @@ const router = new VueRouter({
           path:'/admin_std',component: resolve => require(['../views/Admin/StudentInfo.vue'],resolve),
         },
         {
-          path:'/admin_grade',component: resolve => require(['../views/Admin/GradeInfo.vue'],resolve),
-        },
-        {
           path:'/admin_class',component: resolve => require(['../views/Admin/ClassInfo.vue'],resolve),
         },
         {
           path:'/admin_course',component: resolve => require(['../views/Admin/CourseInfo.vue'],resolve),
+        },
+        {
+          path:'/exam',component: resolve => require(['../views/Admin/Exam.vue'],resolve),
         },
         {
           path:'/admin_teacher',component: resolve => require(['../views/Admin/TeacherInfo.vue'],resolve),
