@@ -7,7 +7,7 @@
       <el-row :gutter="16">
         <el-col :span="7">
           <el-input
-            placeholder="输入学号或姓名进行搜素"
+            placeholder="输入学号或姓名进行搜索"
             v-model="searchValue"
             clearable
             @keyup.enter.native="search"
@@ -280,9 +280,8 @@ export default {
     search() {
       if (this.searchValue) {
         this.$http
-          .get("teacher/searchStd", { params: { str: this.searchValue } })
+          .get("teacher/searchStd", { params: { str: this.searchValue,teacher_id:this.$store.state.userInfo.identity_id } })
           .then(({ data: res }) => {
-            console.log(res);
             if (res.status !== 200) {
               return this.$message.error("查询失败");
             } else {

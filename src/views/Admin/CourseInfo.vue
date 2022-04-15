@@ -195,16 +195,16 @@
       width="50%"
       @close="closeAddStdDialog"
     >
-        <el-tree
-          :data="ClassStdList"
-          show-checkbox
-          node-key="student_id"
-          :props="treeProps"
-          ref="treeRef"
-          :default-expanded-keys="defExpandKeys"
-          :default-checked-keys="defCheckKeys"
-        >
-        </el-tree>
+      <el-tree
+        :data="ClassStdList"
+        show-checkbox
+        node-key="student_id"
+        :props="treeProps"
+        ref="treeRef"
+        :default-expanded-keys="defExpandKeys"
+        :default-checked-keys="defCheckKeys"
+      >
+      </el-tree>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="commitAddStdForm">确 定</el-button>
         <el-button @click="addStdDialog = false">取 消</el-button>
@@ -262,7 +262,7 @@ export default {
       },
       defExpandKeys: [],
       defCheckKeys: [],
-      course_id:'',
+      course_id: "",
     };
   },
   created() {
@@ -376,18 +376,23 @@ export default {
       this.addStdDialog = false;
     },
     commitAddStdForm() {
-      const stdList = [
-        ...this.$refs.treeRef.getCheckedKeys()
-      ]
-      this.$http.post('admin/addCourseStd',stdList,{params:{course_id:this.course_id}}).then(({data:res})=>{
-        if(res.status !== 200){
-          return this.$message.error('向该课程新增学生失败');
-        } else {
-          this.$message.success('向该课程新增学生成功');
-          this.addStdDialog = false;
-          this.getCourseList();
-        }
-      })
+      const stdList = [...this.$refs.treeRef.getCheckedKeys()];
+      if (stdList.length > 0) {
+        this.$http
+          .post("admin/addCourseStd", stdList, {
+            params: { course_id: this.course_id },
+          })
+          .then(({ data: res }) => {
+            console.log(res);
+            if (res.status !== 200) {
+              return this.$message.error("修改课程学生失败");
+            } else {
+              this.$message.success("修改课程学生成功");
+              this.addStdDialog = false;
+              this.getCourseList();
+            }
+          });
+      }
     },
     commitEditForm() {
       this.$refs.editRef.validate((valid) => {

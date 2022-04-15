@@ -8,7 +8,7 @@
       <el-row :gutter="16">
         <el-col :span="7">
           <el-input
-            placeholder="输入学号或姓名进行搜素"
+            placeholder="输入学号或姓名进行搜索"
             v-model="searchValue"
             clearable
             @keyup.enter.native='search'

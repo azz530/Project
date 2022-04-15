@@ -233,7 +233,131 @@
         class="parentsCard"
         v-if="$store.state.userInfo.identity === '家长' ? true : false"
       >
-        <div class="search"></div>
+        <div class="searchChildInfo">
+          <el-input
+            placeholder="输入孩子学号进行搜索"
+            v-model="searchValue"
+            clearable
+            @keyup.enter.native="search"
+          >
+            <i
+              slot="suffix"
+              class="el-input__icon el-icon-search"
+              @click="search"
+            ></i>
+          </el-input>
+        </div>
+        <div class="childMessage" v-if="isSearch">
+          <el-tabs v-model="activeNum" @tab-click="handleClickParents">
+            <el-tab-pane label="作业信息" name="1">
+              <div class="homework">
+                <div
+                  class="homeworkItem"
+                  v-for="item in ChildrenWorkList"
+                  :key="item.id"
+                >
+                  <div class="workMessage">
+                    <div class="course_name">科目:{{ item.course_name }}</div>
+                    <p class="workName">作业名:{{ item.work_name }}</p>
+                    <p class="workDetails">详情:{{ item.work_details }}</p>
+                    <p class="workTime">发布时间:{{ item.work_time }}</p>
+                    <p class="EndTime">截止时间:{{ item.end_time }}</p>
+                  </div>
+                  <div class="childEditInfo">
+                    提交信息:
+                    <div class="pic">
+                      <div
+                        class="picItem"
+                        v-show="item.work_pic.length > 0 ? true : false"
+                        v-for="pic in item.work_pic"
+                        :key="pic"
+                      >
+                        <img :src="pic" alt="" />
+                        <div class="mask">
+                          <i
+                            class="el-icon-search"
+                            @click="handlePictureCardPreview(pic)"
+                          ></i>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="content">{{ item.work_content }}</p>
+                    <p class="editTime">提交时间:{{ item.time }}</p>
+                  </div>
+                  <el-divider></el-divider>
+                </div>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="老师评价" name="2">
+              <div class="evaluate">
+                <div
+                  class="evaluateItem"
+                  v-for="item in ChildrenEvaList"
+                  :key="item.id"
+                >
+                  <div class="content">{{ item.content }}</div>
+
+                  <div class="courseStars">
+                    课堂表现:
+                    <el-rate
+                      v-model="item.course_stars"
+                      :colors="colors"
+                      :disabled="true"
+                    ></el-rate>
+                  </div>
+                  <div class="workStars">
+                    作业表现:
+                    <el-rate
+                      v-model="item.work_stars"
+                      :colors="colors"
+                      :disabled="true"
+                    ></el-rate>
+                  </div>
+                  <div class="thinkStars">
+                    思想表现:
+                    <el-rate
+                      v-model="item.think_stars"
+                      :colors="colors"
+                      :disabled="true"
+                    ></el-rate>
+                  </div>
+                  <div class="evaluateMessage">
+                    <div class="teacher">{{ item.teacher_name }}</div>
+                    <div class="time">{{ item.public_time }}</div>
+                  </div>
+                  <el-divider></el-divider>
+                </div>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="考试成绩" name="3">
+              <div class="score">
+                <div
+                  class="scoreItem"
+                  v-for="item in ExamList"
+                  :key="item.exam_id"
+                >
+                  <div class="examTitle">
+                    {{ item.exam_name }}
+                  </div>
+                  <div class="examContent">
+                    {{ item.exam_message }}
+                  </div>
+                  <div class="footer">
+                    <el-button
+                      type="primary"
+                      round
+                      size="mini"
+                      @click="openExamScoreParent(item.exam_id)"
+                      >查看成绩</el-button
+                    >
+                    <p>考试时间:{{ item.start_time }}~{{ item.end_time }}</p>
+                  </div>
+                  <el-divider></el-divider>
+                </div>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
+        </div>
       </el-card>
     </div>
 
@@ -419,6 +543,9 @@
         <el-button @click="activityDialog = false">取 消</el-button>
       </div>
     </el-dialog>
+    <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="showPic" alt="" />
+    </el-dialog>
   </div>
 </template>
 
@@ -511,6 +638,13 @@ export default {
         name: [{ required: true, message: "请输入活动名称", trigger: "blur" }],
         actime: [{ required: true, message: "请选择时间", trigger: "blur" }],
       },
+      searchValue: "",
+      activeNum: "1",
+      ChildrenWorkList: [],
+      ChildrenEvaList: [],
+      showPic: "",
+      dialogVisible: false,
+      isSearch:false,
     };
   },
   created() {
@@ -845,6 +979,68 @@ export default {
         this.getActivity();
       }
     },
+
+    search() {
+      if (this.searchValue) {
+        let reg = /^\d{6,10}$/;
+        if (reg.test(this.searchValue)) {
+          this.$http
+            .get("my/getChildrenInfo", {
+              params: { student_id: this.searchValue },
+            })
+            .then(({ data: res }) => {
+              console.log(res);
+              if (res.status !== 200) {
+                return this.$message.error("查询失败");
+              } else {
+                this.$message.success("查询成功");
+                this.isSearch = true;
+                this.ChildrenWorkList = res.workList;
+                this.ChildrenEvaList = res.evaList;
+              }
+            });
+        } else {
+          return this.$message.error("请输入正确的学号");
+        }
+      }
+    },
+    handleClickParents(tab) {
+      if (tab.name === "3") {
+        this.getExamList();
+      }
+    },
+    handlePictureCardPreview(pic) {
+      this.dialogVisible = true;
+      this.showPic = pic;
+    },
+    openExamScoreParent(id) {
+      this.scoreDialog = true;
+      this.$http
+        .get("my/getScoreData", {
+          params: {
+            student_id: this.searchValue,
+            exam_id: id,
+          },
+        })
+        .then(({ data: res }) => {
+          if (res.status !== 200) {
+            if (res.status === 402) {
+              return this.$message.error("暂无成绩");
+            }
+            return this.$message.error("获取成绩信息失败");
+          } else {
+            console.log(res);
+            const courseArr = res.data.map((item) => {
+              return item.course_name;
+            });
+            const scoreArr = res.data.map((item) => {
+              return item.score;
+            });
+            this.StuendScorePropData.xAxis.data = courseArr;
+            this.StuendScorePropData.series[0].data = scoreArr;
+          }
+        });
+    },
   },
 };
 </script>
@@ -974,8 +1170,7 @@ export default {
                 font-weight: 400;
               }
               .footer {
-                position: relative;
-                right: -1000px;
+                text-align: right;
               }
             }
           }
@@ -1003,9 +1198,137 @@ export default {
       }
     }
     .parentsCard {
+      width: 1350px;
       margin-top: 20px;
-      margin-left: 20px;
-      display: flex;
+      margin-left: 50px;
+      .searchChildInfo {
+        width: 500px;
+        margin: 0 auto;
+        i {
+          cursor: pointer;
+        }
+      }
+      .childMessage {
+        margin-top: 20px;
+        min-height: 500px;
+        .homework {
+          padding: 30px;
+          .homeworkItem {
+            .workMessage {
+              font-size: 16px;
+              letter-spacing: 1px;
+              .workName {
+                padding-bottom: 10px;
+              }
+              .workDetails {
+                padding-bottom: 10px;
+              }
+              .workTime {
+                text-align: right;
+              }
+              .EndTime {
+                text-align: right;
+              }
+            }
+            .childEditInfo {
+              font-size: 16px;
+              .pic {
+                margin-top: 10px;
+                margin-left: 10px;
+                display: flex;
+                .picItem {
+                  width: 150px;
+                  height: 150px;
+                  margin-right: 20px;
+                  position: relative;
+                  cursor: pointer;
+                  &:hover .mask {
+                    opacity: 0.85;
+                  }
+                }
+                img {
+                  width: 100%;
+                  height: 100%;
+                }
+                .mask {
+                  height: 150px;
+                  width: 150px;
+                  background: rgba(0, 0, 0, 0.63);
+                  opacity: 0;
+                  position: absolute;
+                  right: 0;
+                  top: 0;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  i {
+                    font-size: 22px;
+                    color: rgba(240, 240, 248, 0.644);
+                  }
+                }
+              }
+              .content {
+                padding: 10px;
+              }
+              .editTime {
+                text-align: right;
+              }
+            }
+          }
+        }
+        .evaluate {
+          padding: 30px;
+          .evaluateItem {
+            .courseStars {
+              padding-top: 20px;
+              padding-left: 10px;
+              display: flex;
+              .el-rate {
+                margin-left: 10px;
+              }
+            }
+            .workStars {
+              padding-top: 10px;
+              padding-left: 10px;
+              display: flex;
+              .el-rate {
+                margin-left: 10px;
+              }
+            }
+            .thinkStars {
+              padding-top: 10px;
+              padding-left: 10px;
+              display: flex;
+              .el-rate {
+                margin-left: 10px;
+              }
+            }
+            .evaluateMessage {
+              display: flex;
+              position: relative;
+              right: -1000px;
+            }
+          }
+        }
+        .score {
+          padding: 30px;
+          .scoreItem {
+            .examTitle {
+              font-size: 22px;
+              font-weight: 600;
+            }
+            .examContent {
+              text-indent: 2em;
+              margin-top: 20px;
+              font-size: 16px;
+              font-weight: 400;
+            }
+            .footer {
+              text-align: right;
+            }
+          }
+        }
+      }
     }
     .userInfo-card {
       width: 400px;
