@@ -65,7 +65,7 @@
         </el-table-column>
         <el-table-column label="发布时间" prop="public_time" align="center">
         </el-table-column>
-        <el-table-column label="操作" prop="" width="135px" align="center">
+        <el-table-column label="操作" prop="" width="150px" align="center">
           <template v-slot="scope">
             <el-tooltip
               class="item"
@@ -78,6 +78,19 @@
                 type="primary"
                 icon="el-icon-edit"
                 @click="editEvaluate(scope.row)"
+              ></el-button>
+            </el-tooltip>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="删除"
+              placement="top"
+              :enterable="false"
+            >
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                @click="delEvaluate(scope.row.id)"
               ></el-button>
             </el-tooltip>
           </template>
@@ -404,6 +417,28 @@ export default {
           }
         });
     },
+    delEvaluate(id) {
+      this.$confirm("是否删除该评价", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then((res) => {
+          if (res === "confirm") {
+            this.$http
+              .delete("teacher/delEvaluate", { params: { id, } })
+              .then((res) => {
+                if (res.status != 200) {
+                  this.$message.error("删除失败");
+                } else {
+                  this.$message.success("删除成功");
+                }
+                this.getStudentEva();
+              });
+          }
+        })
+        .catch((err) => err);
+    },
     addEva() {
       this.addDialog = true;
       this.getStudentList();
@@ -428,7 +463,12 @@ export default {
     search() {
       if (this.searchValue) {
         this.$http
-          .get("teacher/searchStd", { params: { str: this.searchValue,teacher_id:this.$store.state.userInfo.identity_id } })
+          .get("teacher/searchStd", {
+            params: {
+              str: this.searchValue,
+              teacher_id: this.$store.state.userInfo.identity_id,
+            },
+          })
           .then(({ data: res }) => {
             if (res.status !== 200) {
               return this.$message.error("查询失败");
@@ -443,7 +483,7 @@ export default {
     closeSearch() {
       this.getStudentList();
     },
-    closeAddStdEvaDialog(){
+    closeAddStdEvaDialog() {
       this.addStdEvaDialog = false;
     },
     addStdEvaForm() {

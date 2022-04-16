@@ -108,17 +108,18 @@
               >
                 <div class="workTitle">{{ item.work_name }}</div>
                 <div class="workContent">{{ item.work_details }}</div>
-                <div class="workDeadline">期限:{{ item.work_deadline }}天</div>
                 <div class="workMessage">
                   <p class="teacher">{{ item.teacher_name }}</p>
                   发布于
                   <p class="time">{{ item.work_time }}</p>
                 </div>
+                <div class="endtime">截止至{{ item.end_time }}</div>
                 <el-button
                   type="primary"
                   @click="openWorkDetails(item.work_id)"
                   size="mini"
-                  >提交作业</el-button
+                  :disabled="item.finishStatus === 1?true:false"
+                  >{{item.finishStatus === 1?'已提交':'提交作业'}}</el-button
                 >
                 <el-divider></el-divider>
               </div>
@@ -225,6 +226,47 @@
                   </div>
                 </template>
               </el-calendar>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="我的课程" name="six">
+            <div class="myCourse">
+              <el-table border style="width: 100%" :data="MyCourseList">
+                <el-table-column
+                  type="index"
+                  label="序号"
+                  fixed
+                  width="100px"
+                  align="center"
+                ></el-table-column>
+                <el-table-column
+                  label="课程号"
+                  prop="course_id"
+                  fixed
+                  align="center"
+                ></el-table-column>
+                <el-table-column
+                  label="课程名称"
+                  prop="course_name"
+                  fixed
+                  align="center"
+                ></el-table-column>
+                <el-table-column
+                  label="课程老师"
+                  prop="teacher_name"
+                  fixed
+                  align="center"
+                ></el-table-column>
+              </el-table>
+              <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="pageInfo.pageNum"
+                :page-sizes="[5, 10]"
+                :page-size="pageInfo.pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="this.pageInfo.total"
+              >
+              </el-pagination>
             </div>
           </el-tab-pane>
         </el-tabs>
@@ -489,7 +531,6 @@
         <el-button
           type="primary"
           @click="commitWorkForm(workForm)"
-          :disabled="this.workForm.work_status ? true : false"
           >确 定</el-button
         >
         <el-button @click="workDialog = false">取 消</el-button>
@@ -644,7 +685,13 @@ export default {
       ChildrenEvaList: [],
       showPic: "",
       dialogVisible: false,
-      isSearch:false,
+      isSearch: false,
+      MyCourseList: [],
+      pageInfo: {
+        pageNum: 1,
+        pageSize: 5,
+        total: 0,
+      },
     };
   },
   created() {
@@ -690,6 +737,7 @@ export default {
           params: { student_id: this.$store.state.userInfo.identity_id },
         })
         .then(({ data: res }) => {
+          console.log(res);
           if (res.status !== 200) {
             return this.$message.error("获取作业信息失败");
           } else {
@@ -842,9 +890,6 @@ export default {
             if (res.data.work_pic) {
               this.workForm.pic = res.data.work_pic.split(",");
             }
-            if (res.data.work_status) {
-              return this.$message.warning("你已提交该作业");
-            }
           }
         });
     },
@@ -966,7 +1011,34 @@ export default {
         }
       });
     },
-
+    //改变每页数据展示规格变化
+    handleSizeChange(newSize) {
+      this.pageInfo.pageSize = newSize;
+      this.getMyCourseList();
+    },
+    //改变当前页数据变化
+    handleCurrentChange(newPage) {
+      this.pageInfo.pageNum = newPage;
+      this.getMyCourseList();
+    },
+    getMyCourseList() {
+      this.$http
+        .get("my/getMyCourse", {
+          params: {
+            student_id: this.$store.state.userInfo.identity_id,
+            pageNum: this.pageInfo.pageNum,
+            pageSize: this.pageInfo.pageSize,
+          },
+        })
+        .then(({ data: res }) => {
+          if (res.status !== 200) {
+            return this.$message.error("获取课程失败");
+          } else {
+            this.MyCourseList = res.data;
+            this.pageInfo.total = res.total
+          }
+        });
+    },
     //tabs点击获取相关页数据
     handleClick(tab, event) {
       if (tab.name === "second") {
@@ -977,6 +1049,8 @@ export default {
         this.getExamList();
       } else if (tab.name === "fifth") {
         this.getActivity();
+      } else if (tab.name === "six") {
+        this.getMyCourseList();
       }
     },
 
@@ -1070,6 +1144,7 @@ export default {
               }
               .workContent {
                 margin-top: 20px;
+                margin-left: 15px;
                 font-size: 16px;
                 font-weight: 400;
               }
@@ -1087,8 +1162,13 @@ export default {
                   margin-left: 3px;
                 }
               }
-              .workDeadline {
-                margin-top: 10px;
+              .endtime{
+                padding-top: 10px;
+                position: relative;
+                right: -980px;
+              }
+              .el-button{
+                margin-left: 15px;
               }
             }
           }
@@ -1192,6 +1272,14 @@ export default {
                   font-size: 16px;
                 }
               }
+            }
+          }
+          .myCourse {
+            margin-top: 50px;
+            .el-pagination {
+              text-align: right;
+              margin-right: 10px;
+              margin-top: 10px;
             }
           }
         }

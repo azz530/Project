@@ -51,8 +51,14 @@
           align="center"
         ></el-table-column>
         <el-table-column
-          label="教学科目"
-          prop="course_name"
+          label="出生日期"
+          prop="birthday"
+          fixed
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          label="家庭住址"
+          prop="address"
           fixed
           align="center"
         ></el-table-column>
@@ -122,15 +128,23 @@
             <el-option label="女" value="女"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="科目" label-width="80px" prop="course_name">
-          <el-select v-model="addTeacherForm.course_name">
-            <el-option
-              v-for="item in CourseList"
-              :key="item.course_id"
-              :label="item.course_name"
-              :value="item.course_name"
-            ></el-option>
-          </el-select>
+        <el-form-item label="出生日期" label-width="80px" prop="birthday">
+          <el-date-picker
+            v-model="addTeacherForm.birthday"
+            type="date"
+            placeholder="选择日期"
+            format="yyyy 年 MM 月 dd 日"
+            value-format="yyyy-MM-dd"
+          >
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="家庭住址" label-width="80px" prop="address">
+          <el-input
+            type="textarea"
+            :rows="5"
+            class="input_long"
+            v-model="addTeacherForm.address"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -163,15 +177,23 @@
             <el-option label="女" value="女"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="科目" label-width="80px" prop="course_name">
-          <el-select v-model="editForm.course_name">
-            <el-option
-              v-for="item in CourseList"
-              :key="item.course_id"
-              :label="item.course_name"
-              :value="item.course_name"
-            ></el-option>
-          </el-select>
+        <el-form-item label="出生日期" label-width="80px" prop="birthday">
+          <el-date-picker
+            v-model="editForm.birthday"
+            type="date"
+            placeholder="选择日期"
+            format="yyyy 年 MM 月 dd 日"
+            value-format="yyyy-MM-dd"
+          >
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="家庭住址" label-width="80px" prop="address">
+          <el-input
+            type="textarea"
+            :rows="5"
+            class="input_long"
+            v-model="editForm.address"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -197,22 +219,14 @@ export default {
     };
     return {
       TeacherList: [],
-      CourseList: [],
       pageInfo: {
         pageNum: 1,
         pageSize: 5,
         total: 0,
       },
-      searchValue:'',
+      searchValue: "",
       addDialog: false,
-      addTeacherForm: {
-        teacher_id: "",
-        teacher_name: "",
-        sex: "",
-        grade_name: "",
-        class_name: "",
-        course_name: "",
-      },
+      addTeacherForm: {},
       TeacherFormRules: {
         teacher_id: [
           { required: true, validator: validateNum, trigger: "blur" },
@@ -229,25 +243,18 @@ export default {
             type: "string",
           },
         ],
-        grade_name: [
+        birthday: [
           {
             required: true,
             message: "请选择年级",
             trigger: ["change", "blur"],
           },
         ],
-        class_name: [
+        address: [
           {
             required: true,
-            message: "请选择班级",
-            trigger: ["change", "blur"],
-          },
-        ],
-        course_name: [
-          {
-            required: true,
-            message: "请选择科目",
-            trigger: ["change", "blur"],
+            message: "请选择年级",
+            trigger: "blur",
           },
         ],
       },
@@ -276,15 +283,6 @@ export default {
             this.pageInfo.total = res.total;
           }
         });
-    },
-    getCourse() {
-      this.$http.get("admin/getCourse").then(({ data: res }) => {
-        if (res.status !== 200) {
-          return this.$message.error("获取课程信息失败");
-        } else {
-          this.CourseList = res.data;
-        }
-      });
     },
     //改变每页数据展示规格变化
     handleSizeChange(newSize) {

@@ -185,6 +185,8 @@ export default {
           { required: true, message: "请输入家庭地址", trigger: "blur" },
         ],
       },
+      commandTem: "",
+      chooseClass: false,
     };
   },
   created() {
@@ -225,6 +227,8 @@ export default {
         });
     },
     classChoose(command) {
+      this.commandTem = command;
+      this.chooseClass = true;
       this.$http
         .get("teacher/getClassStudentList", {
           params: {
@@ -235,6 +239,7 @@ export default {
           },
         })
         .then(({ data: res }) => {
+          console.log(res);
           if (res.status !== 200) {
             return this.$message.error("获取学生信息失败");
           } else {
@@ -246,12 +251,21 @@ export default {
     //改变每页数据展示规格变化
     handleSizeChange(newSize) {
       this.pageInfo.pageSize = newSize;
-      this.getStudentList();
+
+      if (this.chooseClass) {
+        this.classChoose(this.commandTem);
+      } else {
+        this.getStudentList();
+      }
     },
     //改变当前页数据变化
     handleCurrentChange(newPage) {
       this.pageInfo.pageNum = newPage;
-      this.getStudentList();
+      if (this.chooseClass) {
+        this.classChoose(this.commandTem);
+      } else {
+        this.getStudentList();
+      }
     },
     closeEditStdDialog() {
       this.editStdDialog = false;
@@ -280,7 +294,12 @@ export default {
     search() {
       if (this.searchValue) {
         this.$http
-          .get("teacher/searchStd", { params: { str: this.searchValue,teacher_id:this.$store.state.userInfo.identity_id } })
+          .get("teacher/searchStd", {
+            params: {
+              str: this.searchValue,
+              teacher_id: this.$store.state.userInfo.identity_id,
+            },
+          })
           .then(({ data: res }) => {
             if (res.status !== 200) {
               return this.$message.error("查询失败");

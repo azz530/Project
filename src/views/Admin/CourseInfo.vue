@@ -78,7 +78,12 @@
           align="center"
         ></el-table-column>
         <el-table-column
-          label="选课人数"
+          label="科任老师"
+          prop="teacher_name"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          label="课程人数"
           prop="num"
           align="center"
         ></el-table-column>
@@ -154,6 +159,16 @@
         <el-form-item label="课程信息" label-width="80px" prop="course_message">
           <el-input v-model="addCourseForm.course_message"></el-input>
         </el-form-item>
+        <el-form-item label="科任老师" label-width="80px" prop="teacher_id">
+          <el-select v-model="addCourseForm.teacher_id">
+            <el-option
+              v-for="item in TeacherList"
+              :key="item.teacher_id"
+              :label="item.teacher_id + item.teacher_name"
+              :value="item.teacher_id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="commitAddForm">确 定</el-button>
@@ -181,6 +196,16 @@
         </el-form-item>
         <el-form-item label="课程信息" label-width="80px" prop="course_message">
           <el-input v-model="editForm.course_message"></el-input>
+        </el-form-item>
+        <el-form-item label="科任老师" label-width="80px" prop="teacher_id">
+          <el-select v-model="editForm.teacher_id">
+            <el-option
+              v-for="item in TeacherList"
+              :key="item.teacher_id"
+              :label="item.teacher_id + item.teacher_name"
+              :value="item.teacher_id"
+            ></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -236,11 +261,7 @@ export default {
       },
       addDialog: false,
       editDialog: false,
-      addCourseForm: {
-        course_id: "",
-        course_name: "",
-        teacher_id: "",
-      },
+      addCourseForm: {},
       CourseFormRules: {
         course_id: [
           { required: true, validator: validateNum, trigger: "blur" },
@@ -314,8 +335,19 @@ export default {
       this.pageInfo.pageNum = newPage;
       this.getCourseList();
     },
+    getTeacherList(){
+      this.$http.get('admin/getTeacher').then(({data:res})=>{
+        console.log(res);
+        if(res.status !== 200) {
+          return this.$message.error('获取老师列表失败');
+        } else {
+          this.TeacherList = res.data;
+        }
+      })
+    },
     addCourse() {
       this.addDialog = true;
+      this.getTeacherList();
     },
     closeAddDialog() {
       this.$refs.addRef.resetFields();
@@ -342,6 +374,7 @@ export default {
     },
     editCourse(data) {
       this.editDialog = true;
+      this.getTeacherList();
       this.editForm = data;
     },
     closeEditDialog() {
