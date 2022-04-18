@@ -70,7 +70,6 @@ export default {
       this.$http
         .get("home/getNoticeById", { params: { id: this.$route.query.id } })
         .then(({ data: res }) => {
-          console.log(res);
           if (res.status !== 200) {
             return this.$message.error("获取公告详情失败");
           } else {
@@ -85,7 +84,6 @@ export default {
       this.$http
         .get("home/getOtherNotice", { params: { id: this.$route.query.id } })
         .then(({ data: res }) => {
-          console.log(res);
           if (res.status !== 200) {
             return this.$message.error("获取其他公告详情失败");
           } else {

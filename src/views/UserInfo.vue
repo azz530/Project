@@ -737,7 +737,6 @@ export default {
           params: { student_id: this.$store.state.userInfo.identity_id },
         })
         .then(({ data: res }) => {
-          console.log(res);
           if (res.status !== 200) {
             return this.$message.error("获取作业信息失败");
           } else {
@@ -917,8 +916,6 @@ export default {
       this.pictureList.forEach((file) => {
         work.append("file", file.raw);
       });
-
-      // console.log(work);
       this.$http.post("my/commitHomeWork", work).then(({ data: res }) => {
         if (res.status !== 200) {
           return this.$message.error("提交作业失败");
@@ -950,7 +947,6 @@ export default {
             }
             return this.$message.error("获取成绩信息失败");
           } else {
-            console.log(res);
             const courseArr = res.data.map((item) => {
               return item.course_name;
             });
@@ -1063,7 +1059,6 @@ export default {
               params: { student_id: this.searchValue },
             })
             .then(({ data: res }) => {
-              console.log(res);
               if (res.status !== 200) {
                 return this.$message.error("查询失败");
               } else {
@@ -1103,7 +1098,6 @@ export default {
             }
             return this.$message.error("获取成绩信息失败");
           } else {
-            console.log(res);
             const courseArr = res.data.map((item) => {
               return item.course_name;
             });

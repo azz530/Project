@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>用户管理</el-breadcrumb-item>
       <el-breadcrumb-item>用户信息</el-breadcrumb-item>
     </el-breadcrumb>
@@ -181,7 +182,6 @@ export default {
             params: { identity: this.editForm.identity, identity_id: value },
           })
           .then(({ data: res }) => {
-            console.log(res);
             if (res.status !== 200) {
               if (res.status === 403) {
                 callback(new Error("该学号不存在"));
@@ -333,7 +333,6 @@ export default {
         this.$http
           .get("admin/searchUser", { params: { str: this.searchValue } })
           .then(({ data: res }) => {
-            console.log(res);
             if (res.status !== 200) {
               return this.$message.error("查询失败");
             } else {

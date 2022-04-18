@@ -5,7 +5,7 @@
     </el-header>
     <el-container>
       <el-aside :width="CAside? '45px':'250px'">
-        <Menu @asideControll="ControllAside"></Menu>
+        <AsideMenu @asideControll="ControllAside"></AsideMenu>
       </el-aside>
       <el-main>
         <router-view></router-view>
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import Menu from '../components/Menu.vue'
+import AsideMenu from '../components/AsideMenu.vue'
 import Header from '../components/Header.vue'
 export default {
   created() {
@@ -27,7 +27,7 @@ export default {
     }
   },
   components:{
-    Menu,
+    AsideMenu,
     Header
   },
   methods: {

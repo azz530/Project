@@ -1,6 +1,8 @@
 <template>
   <div class="container">
     <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item>作业管理</el-breadcrumb-item>
       <el-breadcrumb-item>学生作业</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card class="box-card">
@@ -245,7 +247,6 @@ export default {
           },
         })
         .then(({ data: res }) => {
-          console.log(res);
           this.HomeWorkList = res.data;
           this.pageInfo.total = res.total;
         });
@@ -272,7 +273,6 @@ export default {
           this.$http
             .post("teacher/addHomeWork", this.HomeWorkForm,{params:{teacher_id:this.$store.state.userInfo.identity_id,}})
             .then((res) => {
-              console.log(res);
               if (res.data.status != 200) {
                 if (res.data.status == 402) {
                   return this.$message.error("该作业号已存在");
@@ -314,7 +314,6 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
       }).then(res=>{
-        console.log(res);
         if(res === 'confirm') {
           this.$http
           .delete("teacher/delHomeWork", { params: { work_id: id } })

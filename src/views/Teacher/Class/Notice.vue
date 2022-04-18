@@ -1,7 +1,9 @@
 <template>
   <div class="container">
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item>班级公告</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item>通知管理</el-breadcrumb-item>
+      <el-breadcrumb-item>通知信息</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card class="box-card">
       <el-button type="primary" @click="addNotice"> 新增公告 </el-button>

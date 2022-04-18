@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>考试管理</el-breadcrumb-item>
       <el-breadcrumb-item>考试信息</el-breadcrumb-item>
     </el-breadcrumb>
@@ -232,7 +233,6 @@ export default {
       this.$refs.addRef.resetFields();
     },
     commitAddForm() {
-      console.log(this.addExamForm);
       this.$refs.addRef.validate((valid) => {
         if (valid) {
           this.$http
@@ -263,7 +263,6 @@ export default {
     commitEditForm() {
       this.$refs.editRef.validate((valid) => {
         if (valid) {
-            console.log(this.editForm);
           this.$http
             .put("admin/changeExamInfo", this.editForm)
             .then(({ data: res }) => {

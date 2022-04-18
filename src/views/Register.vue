@@ -74,7 +74,6 @@ export default {
               },
             })
             .then(({ data: res }) => {
-              console.log(res);
               if (res.status !== 200) {
                 if (res.status === 403) {
                   callback(new Error("该学号不存在"));

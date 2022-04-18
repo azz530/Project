@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>学生管理</el-breadcrumb-item>
       <el-breadcrumb-item>学生信息</el-breadcrumb-item>
     </el-breadcrumb>
@@ -362,7 +363,6 @@ export default {
       this.$refs.addStdRef.validate((valid) => {
         if (valid) {
           this.$http.post("admin/addStudent", this.addStdForm).then((res) => {
-            console.log(res);
             if (res.data.status !== 200) {
               if (res.data.status === 402) {
                 return this.$message.error("该学号已被使用");
@@ -428,7 +428,6 @@ export default {
         this.$http
           .get("admin/searchStd", { params: { str: this.searchValue } })
           .then(({ data: res }) => {
-            console.log(res);
             if (res.status !== 200) {
               return this.$message.error("查询失败");
             } else {

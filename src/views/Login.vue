@@ -47,7 +47,7 @@
           </el-form>
           <div class="tips">
             <router-link to="/register" class="reguser">注册账号</router-link>
-            <router-link to="/register" class="lose">忘记密码</router-link>
+            <router-link to="/forgetPsw" class="lose">忘记密码</router-link>
           </div>
         </el-card>
       </el-col>
@@ -105,7 +105,6 @@ export default {
           
           window.sessionStorage.setItem("token", res.token); //将token存储到sessionStorage
           let userInfo = jwtDecode(res.token);
-          console.log(userInfo);
           this.$store.commit('setUserInfo',{
             username:userInfo.username,
             id:userInfo.id,

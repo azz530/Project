@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>信息管理</el-breadcrumb-item>
       <el-breadcrumb-item>首页信息</el-breadcrumb-item>
     </el-breadcrumb>
@@ -260,7 +261,6 @@ export default {
         } else {
           this.videoList = res.data;
         }
-        console.log(this.videoList);
       });
     },
     bannnerChange(file, fileList) {
@@ -282,13 +282,11 @@ export default {
     },
     commitBanner() {
       let Banner = new FormData();
-      console.log(this.BannerList);
       if (this.BannerList.length > 0) {
         this.BannerList.forEach((file) => {
           Banner.append("file", file.raw);
         });
         this.$http.post("admin/addBanner", Banner).then(({ data: res }) => {
-          console.log(res);
           if (res.status !== 200) {
             return this.$message.error("更新轮播图失败");
           } else {
@@ -343,7 +341,6 @@ export default {
         noticeForm.append("file", file.raw);
       });
       this.$http.post("admin/addNotice", noticeForm).then(({ data: res }) => {
-        console.log(res);
         if (res.status !== 200) {
           return this.$message.error("新增公告失败");
         } else {

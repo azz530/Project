@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>班级管理</el-breadcrumb-item>
       <el-breadcrumb-item>班级信息</el-breadcrumb-item>
     </el-breadcrumb>
@@ -43,6 +44,19 @@
                 type="primary"
                 icon="el-icon-search"
                 @click="checkClassInfo(scope.row.class_id)"
+              ></el-button>
+            </el-tooltip>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="班主任设置"
+              placement="top"
+              :enterable="false"
+            >
+              <el-button
+                type="primary"
+                icon="el-icon-edit"
+                @click="checkClassTeacher(scope.row)"
               ></el-button>
             </el-tooltip>
           </template>
@@ -104,6 +118,26 @@
         </el-pagination>
       </el-card>
     </el-dialog>
+
+    <el-dialog
+      title="班级信息"
+      :visible.sync="EditDialog"
+      width="50%"
+      @close="closeEditDialog"
+    >
+      <el-select v-model="classTeacher">
+        <el-option
+          v-for="item in TeacherList"
+          :key="item.teacher_id"
+          :label="item.teacher_name + ' ' + item.teacher_id"
+          :value="item.teacher_id"
+        ></el-option>
+      </el-select>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="commitForm">确 定</el-button>
+        <el-button @click="EditDialog = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -125,7 +159,10 @@ export default {
         pageSize: 6,
         total: 0,
       },
-      class_id:null,
+      class_id: null,
+      EditDialog: false,
+      TeacherList: [],
+      classTeacher: "",
     };
   },
   created() {
@@ -164,8 +201,16 @@ export default {
     },
     checkClassInfo(id) {
       this.checkDialog = true;
-      this.class_id = id;
       this.getClassStd(id);
+    },
+    getTeacherList() {
+      this.$http.get("admin/getTeacher").then(({ data: res }) => {
+        if (res.status !== 200) {
+          return this.$message.error("获取老师列表失败");
+        } else {
+          this.TeacherList = res.data;
+        }
+      });
     },
     getClassStd(class_id) {
       this.$http
@@ -188,6 +233,26 @@ export default {
     handleSmallCurrentChange(page) {
       this.smallPageInfo.currentPage = page;
       this.getClassStd(this.class_id);
+    },
+    checkClassTeacher(data) {
+      this.classTeacher = data.teacher_name;
+      this.EditDialog = true;
+      this.class_id = data.class_id;
+      this.getTeacherList();
+    },
+    closeEditDialog(){
+      this.EditDialog = false;
+    },
+    commitForm() {
+      this.$http.put('admin/editClassTeacher',{teacher_id:this.classTeacher,class_id:this.class_id}).then(({data:res})=>{
+        if(res.status !== 200){
+          return this.$message.error('设置失败');
+        } else {
+          this.$message.success('设置成功');
+          this.EditDialog = false;
+          this.getClassList();
+        }
+      })
     },
   },
 };

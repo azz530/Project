@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>课程管理</el-breadcrumb-item>
       <el-breadcrumb-item>课程信息</el-breadcrumb-item>
     </el-breadcrumb>
@@ -16,16 +17,15 @@
         <el-table-column
           type="expand"
           label="展开"
-          fixed
           align="center"
           width="100px"
         >
-          <template v-slot="scope">
+          <template class="expand" v-slot="scope">
             <el-table
               border
               style="width: 100%"
               :data="scope.row.childrenList"
-              max-height="196px"
+              height="196px"
             >
               <el-table-column
                 label="学号"
@@ -56,20 +56,17 @@
         <el-table-column
           type="index"
           label="序号"
-          fixed
           width="100px"
           align="center"
         ></el-table-column>
         <el-table-column
           label="课程号"
           prop="course_id"
-          fixed
           align="center"
         ></el-table-column>
         <el-table-column
           label="课程名称"
           prop="course_name"
-          fixed
           align="center"
         ></el-table-column>
         <el-table-column
@@ -337,7 +334,6 @@ export default {
     },
     getTeacherList(){
       this.$http.get('admin/getTeacher').then(({data:res})=>{
-        console.log(res);
         if(res.status !== 200) {
           return this.$message.error('获取老师列表失败');
         } else {
@@ -416,7 +412,6 @@ export default {
             params: { course_id: this.course_id },
           })
           .then(({ data: res }) => {
-            console.log(res);
             if (res.status !== 200) {
               return this.$message.error("修改课程学生失败");
             } else {
@@ -481,6 +476,12 @@ export default {
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15) !important;
     .courseTable {
       margin-top: 30px;
+      .expand{
+        height: 196px;
+        .el-table{
+          
+        }
+      }
     }
     .el-pagination {
       text-align: right;

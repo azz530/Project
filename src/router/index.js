@@ -18,6 +18,10 @@ const router = new VueRouter({
       component: resolve => require(['../views/Register.vue'],resolve),
     },
     {
+      path:'/forgetPsw',
+      component: resolve => require(['../views/ForgetPsw.vue'],resolve),
+    },
+    {
       path:'/home',
       component: resolve => require(['../views/Home.vue'],resolve),
     },
@@ -96,7 +100,7 @@ router.beforeEach((to,from,next)=> {
   //to 将要访问的路径
   //from 从哪个路径跳转
   //next 是一个函数，表示放行 next()放行/ next('/url')强制跳转
-  if( to.path === '/login'|| to.path === '/register') {
+  if( to.path === '/login'|| to.path === '/register' || to.path === '/forgetPsw') {
     return next();
   }
   const tokenStr = window.sessionStorage.getItem('token'); //获取token

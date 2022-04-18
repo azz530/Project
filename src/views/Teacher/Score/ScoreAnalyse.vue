@@ -1,7 +1,9 @@
 <template>
   <div class="container">
     <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>成绩分析</el-breadcrumb-item>
+      <el-breadcrumb-item>成绩图表</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card class="mainCard">
       <div class="box" v-for="item in ExamArr" :key="item.exam_id">
@@ -94,11 +96,9 @@ export default {
           },
         })
         .then(({ data: res }) => {
-          console.log(res);
           if (res.status !== 200) {
             return this.$message.error("获取成绩失败");
           } else {
-            console.log(res);
             const ScoreData = [
               { name: "不及格(<60)", value: res.data.d },
               { name: "及格(60~70)", value: res.data.c },

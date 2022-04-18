@@ -6,6 +6,76 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "4310077",
+      "name": "作业",
+      "font_class": "zuoye1",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "1013146",
+      "name": "老师",
+      "font_class": "jiaolian1",
+      "unicode": "e69d",
+      "unicode_decimal": 59037
+    },
+    {
+      "icon_id": "1330917",
+      "name": "评价",
+      "font_class": "pingjia1",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "2729439",
+      "name": "班级管理",
+      "font_class": "banjiguanli",
+      "unicode": "e69c",
+      "unicode_decimal": 59036
+    },
+    {
+      "icon_id": "4305650",
+      "name": "我的学生",
+      "font_class": "wodexuesheng",
+      "unicode": "e67d",
+      "unicode_decimal": 59005
+    },
+    {
+      "icon_id": "6500633",
+      "name": "课程",
+      "font_class": "kecheng1",
+      "unicode": "e631",
+      "unicode_decimal": 58929
+    },
+    {
+      "icon_id": "8802637",
+      "name": "信息",
+      "font_class": "xinxi",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    },
+    {
+      "icon_id": "10359999",
+      "name": "考试管理",
+      "font_class": "kaoshiguanli",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "12753449",
+      "name": "用户管理",
+      "font_class": "yonghuguanli_huaban",
+      "unicode": "e62d",
+      "unicode_decimal": 58925
+    },
+    {
+      "icon_id": "17605471",
+      "name": "通知",
+      "font_class": "tongzhi",
+      "unicode": "e816",
+      "unicode_decimal": 59414
+    },
+    {
       "icon_id": "7140573",
       "name": "性别女",
       "font_class": "xingbienv",
@@ -41,34 +111,6 @@
       "unicode_decimal": 58926
     },
     {
-      "icon_id": "933636",
-      "name": "评价",
-      "font_class": "pingjia",
-      "unicode": "e613",
-      "unicode_decimal": 58899
-    },
-    {
-      "icon_id": "3427892",
-      "name": "饼状图",
-      "font_class": "icon-",
-      "unicode": "e633",
-      "unicode_decimal": 58931
-    },
-    {
-      "icon_id": "5967396",
-      "name": "课程",
-      "font_class": "kecheng",
-      "unicode": "e66f",
-      "unicode_decimal": 58991
-    },
-    {
-      "icon_id": "6606729",
-      "name": "作业",
-      "font_class": "zuoye1",
-      "unicode": "e636",
-      "unicode_decimal": 58934
-    },
-    {
       "icon_id": "6844448",
       "name": "分析",
       "font_class": "fenxi",
@@ -76,39 +118,11 @@
       "unicode_decimal": 58938
     },
     {
-      "icon_id": "7339831",
-      "name": "曲线图",
-      "font_class": "quxiantu",
-      "unicode": "e6a3",
-      "unicode_decimal": 59043
-    },
-    {
       "icon_id": "2815741",
       "name": "右箭头",
       "font_class": "youjiantou",
       "unicode": "e600",
       "unicode_decimal": 58880
-    },
-    {
-      "icon_id": "7964498",
-      "name": "课程管理",
-      "font_class": "kechengguanli",
-      "unicode": "e62f",
-      "unicode_decimal": 58927
-    },
-    {
-      "icon_id": "18497346",
-      "name": "选择",
-      "font_class": "xuanze",
-      "unicode": "e607",
-      "unicode_decimal": 58887
-    },
-    {
-      "icon_id": "1447801",
-      "name": "作业",
-      "font_class": "zuoye",
-      "unicode": "e632",
-      "unicode_decimal": 58930
     },
     {
       "icon_id": "2019094",
@@ -123,13 +137,6 @@
       "font_class": "chengjiluru",
       "unicode": "e651",
       "unicode_decimal": 58961
-    },
-    {
-      "icon_id": "10231670",
-      "name": "考勤",
-      "font_class": "kaoqin",
-      "unicode": "e61c",
-      "unicode_decimal": 58908
     },
     {
       "icon_id": "1072934",

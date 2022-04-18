@@ -1,7 +1,9 @@
 <template>
   <div class="container">
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item>学生考勤</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item>评价管理</el-breadcrumb-item>
+      <el-breadcrumb-item>学生评价</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card class="box-card">
       <el-button @click="addEva" type="primary"> 新增评价 </el-button>
