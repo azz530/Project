@@ -99,12 +99,15 @@
         v-if="$store.state.userInfo.identity === '学生' ? true : false"
       >
         <el-tabs v-model="activeName" @tab-click="handleClick">
-          <el-tab-pane label="作业信息" name="first">
+          <el-tab-pane name="first">
+            <span slot="label"
+              ><i class="iconfont icon-zuoye1"></i> 作业信息</span
+            >
             <div class="homework">
               <div
                 class="homeworkItem"
-                v-for="item in HomeWorkList"
-                :key="item.work_id"
+                v-for="(item, index) in HomeWorkList"
+                :key="index"
               >
                 <div class="workTitle">{{ item.work_name }}</div>
                 <div class="workContent">{{ item.work_details }}</div>
@@ -118,19 +121,44 @@
                   type="primary"
                   @click="openWorkDetails(item.work_id)"
                   size="mini"
-                  :disabled="item.finishStatus === 1?true:false"
-                  >{{item.finishStatus === 1?'已提交':'提交作业'}}</el-button
+                  :disabled="item.finishStatus === 1 ? true : false"
+                  >{{
+                    item.finishStatus === 1 ? "已提交" : "提交作业"
+                  }}</el-button
                 >
+                <div class="teacher_eva">
+                  <div class="eva_content">老师批改:{{ item.eva_content }}</div>
+                  <div class="stars">
+                    <el-rate
+                      v-model="item.stars"
+                      :colors="colors"
+                      :disabled="true"
+                    ></el-rate>
+                  </div>
+                </div>
                 <el-divider></el-divider>
               </div>
             </div>
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="pageInfo.pageNum"
+              :page-sizes="[5, 10]"
+              :page-size="pageInfo.pageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="pageInfo.total"
+            >
+            </el-pagination>
           </el-tab-pane>
-          <el-tab-pane label="老师通知" name="second">
+          <el-tab-pane name="second">
+            <span slot="label"
+              ><i class="iconfont icon-tongzhi"></i> 老师通知</span
+            >
             <div class="notice">
               <div
                 class="noticeItem"
-                v-for="item in Notice"
-                :key="item.notice_id"
+                v-for="(item, index) in Notice"
+                :key="index"
               >
                 <div class="theme">{{ item.notice_theme }}</div>
                 <div class="content">{{ item.notice_details }}</div>
@@ -143,10 +171,27 @@
                 <el-divider></el-divider>
               </div>
             </div>
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="pageInfo.pageNum"
+              :page-sizes="[5, 10]"
+              :page-size="pageInfo.pageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="pageInfo.total"
+            >
+            </el-pagination>
           </el-tab-pane>
-          <el-tab-pane label="老师评价" name="third">
+          <el-tab-pane name="third">
+            <span slot="label"
+              ><i class="iconfont icon-pingjia1"></i> 老师评价</span
+            >
             <div class="evaluate">
-              <div class="evaluateItem" v-for="item in EvaList" :key="item.id">
+              <div
+                class="evaluateItem"
+                v-for="(item, index) in EvaList"
+                :key="index"
+              >
                 <div class="content">{{ item.content }}</div>
 
                 <div class="courseStars">
@@ -180,13 +225,26 @@
                 <el-divider></el-divider>
               </div>
             </div>
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="pageInfo.pageNum"
+              :page-sizes="[5, 10]"
+              :page-size="pageInfo.pageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="pageInfo.total"
+            >
+            </el-pagination>
           </el-tab-pane>
-          <el-tab-pane label="考试成绩" name="fourth">
+          <el-tab-pane name="fourth">
+            <span slot="label"
+              ><i class="iconfont icon-kaoshiguanli"></i> 考试成绩</span
+            >
             <div class="score">
               <div
                 class="scoreItem"
-                v-for="item in ExamList"
-                :key="item.exam_id"
+                v-for="(item, index) in ExamList"
+                :key="index"
               >
                 <div class="examTitle">
                   {{ item.exam_name }}
@@ -207,8 +265,19 @@
                 <el-divider></el-divider>
               </div>
             </div>
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="pageInfo.pageNum"
+              :page-sizes="[5, 10]"
+              :page-size="pageInfo.pageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="pageInfo.total"
+            >
+            </el-pagination>
           </el-tab-pane>
-          <el-tab-pane label="日程安排" name="fifth">
+          <el-tab-pane name="fifth">
+            <span slot="label"><i class="el-icon-date"></i> 日程安排</span>
             <div class="activity">
               <el-calendar v-model="nowDate">
                 <template slot="dateCell" slot-scope="{ data }">
@@ -228,7 +297,10 @@
               </el-calendar>
             </div>
           </el-tab-pane>
-          <el-tab-pane label="我的课程" name="six">
+          <el-tab-pane name="six">
+            <span slot="label"
+              ><i class="iconfont icon-kecheng1"></i> 我的课程</span
+            >
             <div class="myCourse">
               <el-table border style="width: 100%" :data="MyCourseList">
                 <el-table-column
@@ -257,17 +329,17 @@
                   align="center"
                 ></el-table-column>
               </el-table>
-              <el-pagination
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="pageInfo.pageNum"
-                :page-sizes="[5, 10]"
-                :page-size="pageInfo.pageSize"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="this.pageInfo.total"
-              >
-              </el-pagination>
             </div>
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="pageInfo.pageNum"
+              :page-sizes="[5, 10]"
+              :page-size="pageInfo.pageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="pageInfo.total"
+            >
+            </el-pagination>
           </el-tab-pane>
         </el-tabs>
       </el-card>
@@ -291,7 +363,10 @@
         </div>
         <div class="childMessage" v-if="isSearch">
           <el-tabs v-model="activeNum" @tab-click="handleClickParents">
-            <el-tab-pane label="作业信息" name="1">
+            <el-tab-pane name="1">
+              <span slot="label"
+                ><i class="iconfont icon-zuoye1"></i> 作业信息</span
+              >
               <div class="homework">
                 <div
                   class="homeworkItem"
@@ -326,11 +401,26 @@
                     <p class="content">{{ item.work_content }}</p>
                     <p class="editTime">提交时间:{{ item.time }}</p>
                   </div>
+                  <div class="teacher_eva">
+                    <div class="eva_content">
+                      老师批改:{{ item.eva_content }}
+                    </div>
+                    <div class="stars">
+                      <el-rate
+                        v-model="item.stars"
+                        :colors="colors"
+                        :disabled="true"
+                      ></el-rate>
+                    </div>
+                  </div>
                   <el-divider></el-divider>
                 </div>
               </div>
             </el-tab-pane>
-            <el-tab-pane label="老师评价" name="2">
+            <el-tab-pane name="2">
+              <span slot="label"
+                ><i class="iconfont icon-pingjia1"></i> 老师评价</span
+              >
               <div class="evaluate">
                 <div
                   class="evaluateItem"
@@ -371,11 +461,14 @@
                 </div>
               </div>
             </el-tab-pane>
-            <el-tab-pane label="考试成绩" name="3">
+            <el-tab-pane name="3">
+              <span slot="label"
+                ><i class="iconfont icon-kaoshiguanli"></i> 考试成绩</span
+              >
               <div class="score">
                 <div
                   class="scoreItem"
-                  v-for="item in ExamList"
+                  v-for="item in ChildrenExamList"
                   :key="item.exam_id"
                 >
                   <div class="examTitle">
@@ -528,9 +621,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button
-          type="primary"
-          @click="commitWorkForm(workForm)"
+        <el-button type="primary" @click="commitWorkForm(workForm)"
           >确 定</el-button
         >
         <el-button @click="workDialog = false">取 消</el-button>
@@ -683,8 +774,8 @@ export default {
       activeNum: "1",
       ChildrenWorkList: [],
       ChildrenEvaList: [],
+      ChildrenExamList: [],
       showPic: "",
-      dialogVisible: false,
       isSearch: false,
       MyCourseList: [],
       pageInfo: {
@@ -692,6 +783,7 @@ export default {
         pageSize: 5,
         total: 0,
       },
+      tabspage: "first",
     };
   },
   created() {
@@ -721,48 +813,71 @@ export default {
     getNotice() {
       this.$http
         .get("my/getNotice", {
-          params: { student_id: this.$store.state.userInfo.identity_id },
+          params: {
+            student_id: this.$store.state.userInfo.identity_id,
+            pageNum: this.pageInfo.pageNum,
+            pageSize: this.pageInfo.pageSize,
+          },
         })
         .then(({ data: res }) => {
           if (res.status !== 200) {
             return this.$message.error("获取班级公告失败");
           } else {
             this.Notice = res.data;
+            this.pageInfo.total = res.total;
           }
         });
     },
     getHomeWork() {
       this.$http
         .get("my/getHomeWork", {
-          params: { student_id: this.$store.state.userInfo.identity_id },
+          params: {
+            student_id: this.$store.state.userInfo.identity_id,
+            pageNum: this.pageInfo.pageNum,
+            pageSize: this.pageInfo.pageSize,
+          },
         })
         .then(({ data: res }) => {
           if (res.status !== 200) {
             return this.$message.error("获取作业信息失败");
           } else {
             this.HomeWorkList = res.data;
+            this.pageInfo.total = res.total;
           }
         });
     },
     getExamList() {
-      this.$http.get("my/getExamInfo").then(({ data: res }) => {
-        if (res.status !== 200) {
-          return this.$message.error("暂无考试信息");
-        } else {
-          this.ExamList = res.data;
-        }
-      });
+      this.$http
+        .get("my/getExamInfo", {
+          params: {
+            pageNum: this.pageInfo.pageNum,
+            pageSize: this.pageInfo.pageSize,
+          },
+        })
+        .then(({ data: res }) => {
+          if (res.status !== 200) {
+            return this.$message.error("暂无考试信息");
+          } else {
+            this.ExamList = res.data;
+            this.pageInfo.total = res.total;
+          }
+        });
     },
     getEvaList() {
       this.$http
         .get("my/getStdEva", {
-          params: { student_id: this.$store.state.userInfo.identity_id },
+          params: {
+            student_id: this.$store.state.userInfo.identity_id,
+            pageNum: this.pageInfo.pageNum,
+            pageSize: this.pageInfo.pageSize,
+          },
         })
         .then(({ data: res }) => {
           if (res.status !== 200) {
             return this.$message.error("获取老师评价失败");
           } else {
             this.EvaList = res.data;
+            this.pageInfo.total = res.total;
           }
         });
     },
@@ -1010,12 +1125,32 @@ export default {
     //改变每页数据展示规格变化
     handleSizeChange(newSize) {
       this.pageInfo.pageSize = newSize;
-      this.getMyCourseList();
+      if (this.tabspage === "first") {
+        this.getHomeWork();
+      } else if (this.tabspage === "second") {
+        this.getNotice();
+      } else if (this.tabspage === "third") {
+        this.getEvaList();
+      } else if (this.tabspage === "fourth") {
+        this.getExamList();
+      } else if (this.tabspage === "six") {
+        this.getMyCourseList();
+      }
     },
     //改变当前页数据变化
     handleCurrentChange(newPage) {
       this.pageInfo.pageNum = newPage;
-      this.getMyCourseList();
+      if (this.tabspage === "first") {
+        this.getHomeWork();
+      } else if (this.tabspage === "second") {
+        this.getNotice();
+      } else if (this.tabspage === "third") {
+        this.getEvaList();
+      } else if (this.tabspage === "fourth") {
+        this.getExamList();
+      } else if (this.tabspage === "six") {
+        this.getMyCourseList();
+      }
     },
     getMyCourseList() {
       this.$http
@@ -1031,21 +1166,39 @@ export default {
             return this.$message.error("获取课程失败");
           } else {
             this.MyCourseList = res.data;
-            this.pageInfo.total = res.total
+            this.pageInfo.total = res.total;
           }
         });
     },
     //tabs点击获取相关页数据
     handleClick(tab, event) {
-      if (tab.name === "second") {
+      this.tabspage = tab.name;
+      const initPage = {
+        pageNum: 1,
+        pageSize: 5,
+        total: 0,
+      };
+      if (tab.name === "first") {
+        this.pageInfo = initPage;
+        this.getHomeWork();
+      } else if (tab.name === "second") {
+        this.pageInfo = initPage;
         this.getNotice();
       } else if (tab.name === "third") {
+        this.pageInfo = {
+          pageNum: 1,
+          pageSize: 5,
+          total: 0,
+        };
         this.getEvaList();
       } else if (tab.name === "fourth") {
+        this.pageInfo = initPage;
         this.getExamList();
       } else if (tab.name === "fifth") {
+        this.pageInfo = initPage;
         this.getActivity();
       } else if (tab.name === "six") {
+        this.pageInfo = initPage;
         this.getMyCourseList();
       }
     },
@@ -1066,6 +1219,7 @@ export default {
                 this.isSearch = true;
                 this.ChildrenWorkList = res.workList;
                 this.ChildrenEvaList = res.evaList;
+                this.ChildrenExamList = res.examList;
               }
             });
         } else {
@@ -1073,11 +1227,7 @@ export default {
         }
       }
     },
-    handleClickParents(tab) {
-      if (tab.name === "3") {
-        this.getExamList();
-      }
-    },
+    handleClickParents(tab) {},
     handlePictureCardPreview(pic) {
       this.dialogVisible = true;
       this.showPic = pic;
@@ -1156,13 +1306,20 @@ export default {
                   margin-left: 3px;
                 }
               }
-              .endtime{
+              .endtime {
                 padding-top: 10px;
                 position: relative;
                 right: -980px;
               }
-              .el-button{
+              .el-button {
                 margin-left: 15px;
+              }
+              .teacher_eva {
+                margin-top: 20px;
+                margin-left: 20px;
+                .stars {
+                  padding-top: 10px;
+                }
               }
             }
           }
@@ -1270,12 +1427,12 @@ export default {
           }
           .myCourse {
             margin-top: 50px;
-            .el-pagination {
-              text-align: right;
-              margin-right: 10px;
-              margin-top: 10px;
-            }
           }
+        }
+        .el-pagination {
+          text-align: right;
+          margin-right: 10px;
+          margin-top: 10px;
         }
       }
     }
@@ -1354,6 +1511,13 @@ export default {
               }
               .editTime {
                 text-align: right;
+              }
+            }
+            .teacher_eva {
+              margin-top: 20px;
+              margin-left: 20px;
+              .stars {
+                padding-top: 10px;
               }
             }
           }

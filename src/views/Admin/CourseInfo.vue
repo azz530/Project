@@ -25,7 +25,7 @@
               border
               style="width: 100%"
               :data="scope.row.childrenList"
-              height="196px"
+              max-height="196px"
             >
               <el-table-column
                 label="学号"

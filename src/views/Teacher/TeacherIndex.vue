@@ -264,6 +264,7 @@ export default {
   },
   created() {
     this.getUserInfo();
+    this.getActivity();
   },
   methods: {
     getUserInfo() {
