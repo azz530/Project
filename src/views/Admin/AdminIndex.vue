@@ -357,11 +357,7 @@ export default {
     },
     editUserInfo() {
       this.editDialog = true;
-      this.editForm.username = this.userInfo.username;
-      this.editForm.usersign = this.userInfo.usersign;
-      this.editForm.sex = this.userInfo.sex;
-      this.editForm.address = this.userInfo.address;
-      this.editForm.birthday = this.userInfo.birthday;
+      this.editForm = this.$Tools.CloneDeep(this.userInfo);
     },
     closeEditDialog() {
       this.$refs.editRef.resetFields();

@@ -380,7 +380,7 @@ export default {
       this.course_id = id;
       this.$http
         .get("admin/getCourseStd", { params: { course_id: id } })
-        .then(({ data: res }) => {
+        .then(({ data: res }) => {//获取已经在课程名单中的学生信息
           if (res.status !== 200) {
             return this.$message.error("该课程暂未添加学生");
           } else {
@@ -392,32 +392,32 @@ export default {
             });
           }
         });
-      this.$http.get("admin/getClassStd").then(({ data: res }) => {
+      this.$http.get("admin/getClassStd").then(({ data: res }) => {//获取所有学生信息
         if (res.status !== 200) {
           return this.$message("获取班级、学生列表失败");
         } else {
           this.ClassStdList = res.data;
         }
       });
-      this.addStdDialog = true;
+      this.addStdDialog = true;//打开弹窗
     },
     closeAddStdDialog() {
       this.addStdDialog = false;
     },
     commitAddStdForm() {
-      const stdList = [...this.$refs.treeRef.getCheckedKeys()];
+      const stdList = [...this.$refs.treeRef.getCheckedKeys()];//获取选中的el-tree当中的id（学号）
       if (stdList.length > 0) {
         this.$http
           .post("admin/addCourseStd", stdList, {
             params: { course_id: this.course_id },
           })
-          .then(({ data: res }) => {
+          .then(({ data: res }) => {//向该课程添加学生
             if (res.status !== 200) {
               return this.$message.error("修改课程学生失败");
             } else {
               this.$message.success("修改课程学生成功");
               this.addStdDialog = false;
-              this.getCourseList();
+              this.getCourseList();//重新获取课程信息
             }
           });
       }

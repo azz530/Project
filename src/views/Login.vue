@@ -120,9 +120,7 @@ export default {
           } else if(userInfo.identity === '管理员') {
             this.$router.push('/admin');
           }
-          
         }
-        //获取后端传的token 验证token进行登录
       });
     },
   },

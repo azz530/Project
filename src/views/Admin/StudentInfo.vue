@@ -329,6 +329,7 @@ export default {
           },
         })
         .then(({ data: res }) => {
+          console.log(res);
           if (res.status !== 200) {
             return this.$message.error("获取学生列表失败");
           } else {

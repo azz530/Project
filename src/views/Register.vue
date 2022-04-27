@@ -128,6 +128,7 @@ export default {
       this.$refs.register_reset.resetFields();
     },
     register() {
+      //注册
       this.$refs.register_reset.validate(async (valid) => {
         if (!valid) {
           return;
