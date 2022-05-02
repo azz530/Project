@@ -292,7 +292,6 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
       }).then(res=>{
-        console.log(res);
         if(res === 'confirm') {
           this.$http
           .delete("teacher/delNotice", { params: { notice_id: id } })

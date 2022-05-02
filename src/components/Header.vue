@@ -9,6 +9,7 @@
           ></el-avatar>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="userInfo">个人信息</el-dropdown-item>
+            <el-dropdown-item command="backHome">返回首页</el-dropdown-item>
             <el-dropdown-item command="changePw">修改密码</el-dropdown-item>
             <el-dropdown-item command="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
@@ -106,7 +107,9 @@ export default {
         }
       } else if (command === "changePw") {
         this.PwDialog = true;
-      } else {
+      } else if(command === 'backHome'){
+        this.$router.push("/home");
+      }else {
         this.$confirm("是否要退出", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
