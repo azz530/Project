@@ -10,6 +10,13 @@
 
 项目地址http://118.31.9.116/
 
+体验账号
+管理员:admin  密码:admin123
+
+老师:灰烬  密码 12345678
+
+学生:朝花夕拾 密码:12345678
+
 登录页面
 ![image](https://user-images.githubusercontent.com/75329139/166852601-979ef473-7ee3-4c91-bfb7-c006a1dc0306.png)
 
