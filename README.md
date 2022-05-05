@@ -4,6 +4,9 @@
 
 技术使用：Vue2.0、Vue-router、VueX、Element UI、Echarts
 
+后端技术：Node.js(Express框架)、MySQL数据库、
+后端地址：https://github.com/azz530/Project-Server
+
 项目地址http://118.31.9.116/
 
 登录页面
@@ -19,3 +22,4 @@
 学生页面
 
 ![image](https://user-images.githubusercontent.com/75329139/166852933-d03f9fac-682d-4145-9f70-5c715b6a699d.png)
+
