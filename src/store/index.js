@@ -20,7 +20,6 @@ export default new Vuex.Store({
   mutations: {
     setToken(state,tokenStr){
       state.token = tokenStr;
-      axios.defaults.headers.common['Authorization'] = tokenStr;
     },
     setLoginStatus(state,LoginStatus){
       state.isLogin = LoginStatus;

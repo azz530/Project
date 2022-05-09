@@ -35,6 +35,7 @@
               </el-select>
             </el-form-item>
             <el-form-item>
+              <el-checkbox v-model="isRememberPsw">记住密码</el-checkbox>
               <div class="login_btn">
                 <el-button type="primary" class="login" @click="login"
                   >登录</el-button
@@ -56,7 +57,7 @@
 </template>
 
 <script>
-import jwtDecode from 'jwt-decode'
+import jwtDecode from "jwt-decode";
 export default {
   data() {
     return {
@@ -80,7 +81,14 @@ export default {
           },
         ],
       },
+      isRememberPsw: false,
     };
+  },
+  created(){
+    if(localStorage.getItem('loginForm')&&localStorage.getItem('isRemember')){
+      this.loginForm = JSON.parse(localStorage.getItem('loginForm'));
+      this.isRememberPsw = JSON.parse(localStorage.getItem('isRemember'));
+    }
   },
   methods: {
     resetLoginForm() {
@@ -102,23 +110,33 @@ export default {
           let token = res.token;
           this.$store.commit("setToken", token);
           this.$store.commit("setLoginStatus", true);
-          
+
           window.sessionStorage.setItem("token", res.token); //将token存储到sessionStorage
           let userInfo = jwtDecode(res.token);
-          this.$store.commit('setUserInfo',{
-            username:userInfo.username,
-            id:userInfo.id,
-            identity:userInfo.identity,
-            identity_id:userInfo.identity_id,
-            avatar:userInfo.avatar,
-            usersign:userInfo.usersign
+          this.$store.commit("setUserInfo", {
+            username: userInfo.username,
+            id: userInfo.id,
+            identity: userInfo.identity,
+            identity_id: userInfo.identity_id,
+            avatar: userInfo.avatar,
+            usersign: userInfo.usersign,
           });
-          if(userInfo.identity === '老师'){
+          if(this.isRememberPsw){
+            localStorage.setItem('loginForm',JSON.stringify(this.loginForm));
+            localStorage.setItem('isRemember',true);
+          } else {
+            localStorage.removeItem('loginForm');
+            localStorage.removeItem('isRemember');
+          }
+          if (userInfo.identity === "老师") {
             this.$router.push("/teacher");
-          } else if(userInfo.identity === '家长' || userInfo.identity === '学生') {
-            this.$router.push('/home');
-          } else if(userInfo.identity === '管理员') {
-            this.$router.push('/admin');
+          } else if (
+            userInfo.identity === "家长" ||
+            userInfo.identity === "学生"
+          ) {
+            this.$router.push("/home");
+          } else if (userInfo.identity === "管理员") {
+            this.$router.push("/admin");
           }
         }
       });
@@ -154,6 +172,9 @@ export default {
         .el-select {
           width: 100%;
         }
+        .el-checkbox{
+          margin-right: 400px;
+        }
         .login_btn {
           margin-top: 10px;
           .login {
@@ -175,7 +196,7 @@ export default {
         .reguser:hover {
           color: red;
         }
-        .lose{
+        .lose {
           color: rgb(110, 110, 112);
         }
       }
