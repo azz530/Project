@@ -3,7 +3,7 @@
     <div class="ReplaysUser" v-for="item in ReplayInfo" :key="item.replay_id">
       <div class="top">
         <div class="avatar">
-          <el-avatar :src="item.fromAvatar"></el-avatar>
+          <el-avatar :src="item.fromAvatar?item.fromAvatar:defaultAvatar"></el-avatar>
         </div>
 
         <div class="message">
@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import defaultAvatar from '../assets/img/avatar.jpg';
 export default {
   props: {
     ReplayInfo: [],
@@ -54,7 +55,9 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      defaultAvatar,
+    };
   },
   methods: {
     openReplay(item) {

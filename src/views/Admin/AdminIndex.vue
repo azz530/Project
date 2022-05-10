@@ -215,13 +215,14 @@
 </template>
 
 <script>
+import defaultAvatar from '../../assets/img/avatar.jpg';
 export default {
   data() {
     return {
       headers: {
         Authorization: this.$store.state.token,
       },
-      default_avatar: "https://i02piccdn.sogoucdn.com/54b55e50edd9d56a",
+      default_avatar: defaultAvatar,
       userInfo: {},
       id: "",
       userTags: [],

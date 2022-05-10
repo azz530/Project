@@ -5,7 +5,7 @@
       <el-card class="userInfo-card">
         <i class="el-icon-setting" @click="editUserInfo"></i>
         <div class="userInfo">
-          <el-avatar :size="150" :src="userInfo.avatar"></el-avatar>
+          <el-avatar :size="150" :src="userInfo.avatar?userInfo.avatar:default_avatar"></el-avatar>
           <el-upload
             ref="upload"
             action="http://127.0.0.1:3000/my/uploadAvatar"
@@ -683,6 +683,7 @@
 
 <script>
 import Echarts from "../components/EchartsPic/Echarts.vue";
+import defaultAvatar from '../assets/img/avatar.jpg';
 export default {
   components: {
     Echarts,
@@ -702,7 +703,7 @@ export default {
       headers: {
         Authorization: this.$store.state.token,
       },
-      default_avatar: "https://i02piccdn.sogoucdn.com/54b55e50edd9d56a",
+      default_avatar: defaultAvatar,
       userInfo: {},
       id: this.$store.state.userInfo.id,
       userTags: [],

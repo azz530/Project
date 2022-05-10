@@ -5,7 +5,7 @@
         <el-dropdown @command="handleCommand">
           <el-avatar
             :size="40"
-            :src="this.$store.state.userInfo.avatar"
+            :src="$store.state.userInfo.avatar?$store.state.userInfo.avatar:default_avatar"
           ></el-avatar>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="userInfo">个人信息</el-dropdown-item>
@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import defaultAvatar from '../assets/img/avatar.jpg';
 export default {
   props: ["avatar"],
   data() {
@@ -90,6 +91,7 @@ export default {
         newPassword: [{required: true, message: "请输入密码", trigger: "blur"}],
         checkPassword: [{required: true, validator: validatePass2, trigger: "blur"}],
       },
+      default_avatar:defaultAvatar,
     };
   },
   created() {},

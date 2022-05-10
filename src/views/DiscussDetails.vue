@@ -41,7 +41,7 @@
           <div class="message">
             <div class="author">
               作者:
-              <el-avatar :size="30" :src="DiscussDetails.avatar"></el-avatar>
+              <el-avatar :size="30" :src="DiscussDetails.avatar?DiscussDetails.avatar:defaultAvatar"></el-avatar>
               {{ DiscussDetails.username }}
             </div>
             <div class="time">
@@ -62,6 +62,7 @@
 </template>
 
 <script>
+import defaultAvatar from '../assets/img/avatar.jpg';
 export default {
   name: "ArticleDetails",
   data() {
@@ -70,6 +71,7 @@ export default {
       CommentsInfo: {},
       addDialog: false,
       discuss_comments: "",
+      defaultAvatar,
     };
   },
   created() {
@@ -100,7 +102,6 @@ export default {
           params: { discuss_id: this.$route.query.id },
         })
         .then(({ data: res }) => {
-          console.log(res);
           if (res.status !== 200) {
             return this.$message.error("获取评论失败");
           } else {

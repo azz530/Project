@@ -7,7 +7,7 @@
     >
       <div class="top">
         <div class="avatar">
-          <el-avatar :src="item.avatar"></el-avatar>
+          <el-avatar :src="item.avatar?item.avatar:defaultAvatar"></el-avatar>
         </div>
 
         <div class="message">
@@ -43,12 +43,14 @@
 </template>
 
 <script>
+import defaultAvatar from '../assets/img/avatar.jpg';
 export default {
   props: {
     CommentsInfo: [],
   },
   data() {
     return {
+      defaultAvatar,
     };
   },
   methods: {
