@@ -9,6 +9,7 @@ module.exports = {
         axios:'axios',
         echarts:'echarts',
         "video.js":'Video',
+        'vue-quill-editor':'VueQuillEditor',
       })
       config.plugin('html').tap(args=>{
         args[0].isProd = true;

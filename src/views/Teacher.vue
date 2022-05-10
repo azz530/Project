@@ -24,10 +24,6 @@ export default {
       CAside:false,
     }
   },
-  components:{
-    AsideMenu,
-    Header
-  },
   methods: {
     ControllAside(isCollapse){
       this.CAside = isCollapse;
