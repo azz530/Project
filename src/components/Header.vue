@@ -9,6 +9,7 @@
           ></el-avatar>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="userInfo">个人信息</el-dropdown-item>
+            <el-dropdown-item v-if="$store.state.userInfo.identity === '家长'" command="parentDis">家长讨论</el-dropdown-item>
             <el-dropdown-item command="backHome">返回首页</el-dropdown-item>
             <el-dropdown-item command="changePw">修改密码</el-dropdown-item>
             <el-dropdown-item command="logout">退出登录</el-dropdown-item>
@@ -109,6 +110,8 @@ export default {
         this.PwDialog = true;
       } else if(command === 'backHome'){
         this.$router.push("/home");
+      } else if(command === 'parentDis'){
+        this.$router.push('/parentsDis');
       }else {
         this.$confirm("是否要退出", "提示", {
           confirmButtonText: "确定",

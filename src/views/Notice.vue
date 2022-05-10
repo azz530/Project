@@ -51,7 +51,6 @@
 </template>
 
 <script>
-import Header from "../components/Header.vue";
 export default {
   inject: ["routerRefresh"],
   data() {
@@ -99,9 +98,6 @@ export default {
       }, 500);
     },
   },
-  components: {
-    Header,
-  },
 };
 </script>
 
@@ -110,8 +106,8 @@ export default {
   height: 100vh;
   background: linear-gradient(
     to bottom right,
-    rgba(189, 226, 250, 0.288),
-    rgba(219, 253, 255, 0.281)
+    rgba(215, 219, 223, 0.288),
+    rgba(238, 241, 241, 0.281)
   );
   .main {
     width: 1300px;

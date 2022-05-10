@@ -91,6 +91,14 @@ const router = new VueRouter({
     {
       path:'/notice',
       component: resolve => require(['../views/Notice.vue'],resolve),
+    },
+    {
+      path:'/parentsDis',
+      component: resolve => require(['../views/ParentsDis.vue'],resolve),
+    },
+    {
+      path:'/discussDetails',
+      component: resolve => require(['../views/DiscussDetails.vue'],resolve),
     }
   ]
 })

@@ -682,11 +682,9 @@
 </template>
 
 <script>
-import Header from "../components/Header.vue";
 import Echarts from "../components/EchartsPic/Echarts.vue";
 export default {
   components: {
-    Header,
     Echarts,
   },
   data() {

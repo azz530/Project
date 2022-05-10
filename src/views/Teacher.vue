@@ -15,8 +15,6 @@
 </template>
 
 <script>
-import AsideMenu from '../components/AsideMenu.vue'
-import Header from '../components/Header.vue'
 export default {
   created() {
     //页面开始阶段获取导航栏的列表

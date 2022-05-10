@@ -60,7 +60,7 @@ export default {
 <style lang="less" scoped>
 .container {
   padding: 0;
-  margin: 0;
+  margin: 40px 0;
   max-height: 30vh;
   .tips {
     display: flex;

@@ -1,7 +1,7 @@
 <template>
   <div class="course_container">
     <div class="tips">
-      <i class="iconfont icon-gonggao"></i>
+      <i class="el-icon-video-camera"></i>
       <span>推荐视频</span>
     </div>
     <div class="line"></div>
