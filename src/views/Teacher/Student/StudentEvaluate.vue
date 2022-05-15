@@ -185,14 +185,12 @@
         <el-table-column
           type="index"
           label="序号"
-          fixed
           width="100px"
           align="center"
         ></el-table-column>
         <el-table-column
           label="学号"
           prop="student_id"
-          fixed
           align="center"
         ></el-table-column>
         <el-table-column
@@ -314,6 +312,7 @@ export default {
       searchValue: "",
       addStdEvaDialog: false,
       Sid: "",
+      class_id: "",
     };
   },
   created() {
@@ -345,7 +344,7 @@ export default {
         })
         .then(({ data: res }) => {
           if (res.status !== 200) {
-            return this.$message.error("获取学生列表失败");
+            return this.$message.error("获取评价信息失败");
           } else {
             this.EvaList = res.data;
             this.pageInfo.total = res.total;
@@ -353,12 +352,13 @@ export default {
         });
     },
     classChoose(command) {
+      this.class_id = command;
       this.$http
         .get("teacher/getClassStudentList", {
           params: {
             class_id: command,
-            pageNum: this.pageInfo.pageNum,
-            pageSize: this.pageInfo.pageSize,
+            pageNum: this.DialogpageInfo.pageNum,
+            pageSize: this.DialogpageInfo.pageSize,
             teacher_id: this.$store.state.userInfo.identity_id,
           },
         })
@@ -367,7 +367,7 @@ export default {
             return this.$message.error("获取学生信息失败");
           } else {
             this.StdList = res.data;
-            this.pageInfo.total = res.total;
+            this.DialogpageInfo.total = res.total;
           }
         });
     },
@@ -428,7 +428,7 @@ export default {
         .then((res) => {
           if (res === "confirm") {
             this.$http
-              .delete("teacher/delEvaluate", { params: { id, } })
+              .delete("teacher/delEvaluate", { params: { id } })
               .then((res) => {
                 if (res.status != 200) {
                   this.$message.error("删除失败");
@@ -451,12 +451,20 @@ export default {
     //改变每页数据展示规格变化
     handleDialogSizeChange(newSize) {
       this.DialogpageInfo.pageSize = newSize;
-      this.getStudentList();
+      if (this.class_id) {
+        this.classChoose(this.class_id);
+      } else {
+        this.getStudentList();
+      }
     },
     //改变当前页数据变化
     handleDialogCurrentChange(newPage) {
       this.DialogpageInfo.pageNum = newPage;
-      this.getStudentList();
+      if (this.class_id) {
+        this.classChoose(this.class_id);
+      } else {
+        this.getStudentList();
+      }
     },
     addStdEvaluate(id) {
       this.addStdEvaDialog = true;

@@ -14,7 +14,7 @@
       <el-submenu :index="item.id + ''" v-for="item in MenuList" :key="item.id">
         <template slot="title">
           <i :class="item.icon"></i>
-          <span>{{ item.name }}</span>
+          {{ item.name }}
         </template>
         <el-menu-item-group>
           <el-menu-item
@@ -22,7 +22,7 @@
             v-for="citem in item.children"
             :key="citem.id"
           >
-            <span>{{ citem.name }}</span>
+            {{ citem.name }}
           </el-menu-item>
         </el-menu-item-group>
       </el-submenu>
@@ -221,6 +221,9 @@ export default {
     .iconfont {
       margin-right: 15px;
       color: rgb(0, 136, 255);
+    }
+    /deep/.el-menu-item-group__title{
+      padding: 0 !important;
     }
   }
   .aside_btn {

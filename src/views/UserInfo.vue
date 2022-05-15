@@ -121,9 +121,9 @@
                   type="primary"
                   @click="openWorkDetails(item.work_id)"
                   size="mini"
-                  :disabled="item.finishStatus === 1 ? true : false"
+                  :disabled="item.finishInfo[0].finishStatus === 1 ? true : false"
                   >{{
-                    item.finishStatus === 1 ? "已提交" : "提交作业"
+                    item.finishInfo[0].finishStatus === 1 ? "已提交" : "提交作业"
                   }}</el-button
                 >
                 <div class="teacher_eva">
@@ -306,26 +306,22 @@
                 <el-table-column
                   type="index"
                   label="序号"
-                  fixed
                   width="100px"
                   align="center"
                 ></el-table-column>
                 <el-table-column
                   label="课程号"
                   prop="course_id"
-                  fixed
                   align="center"
                 ></el-table-column>
                 <el-table-column
                   label="课程名称"
                   prop="course_name"
-                  fixed
                   align="center"
                 ></el-table-column>
                 <el-table-column
                   label="课程老师"
                   prop="teacher_name"
-                  fixed
                   align="center"
                 ></el-table-column>
               </el-table>
@@ -873,7 +869,7 @@ export default {
         })
         .then(({ data: res }) => {
           if (res.status !== 200) {
-            return this.$message.error("获取老师评价失败");
+            return this.$message.error("老师还没有给予评价");
           } else {
             this.EvaList = res.data;
             this.pageInfo.total = res.total;
@@ -1037,6 +1033,7 @@ export default {
           this.$message.success("提交作业成功");
           this.workDialog = false;
           this.workForm.picture = res.picurl;
+          this.getHomeWork();
         }
       });
     },

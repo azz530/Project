@@ -103,7 +103,6 @@
       >
       </el-pagination>
     </el-card>
-    <el-card class="userData"> </el-card>
 
     <el-dialog
       title="修改用户信息"

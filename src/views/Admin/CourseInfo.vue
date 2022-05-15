@@ -332,14 +332,14 @@ export default {
       this.pageInfo.pageNum = newPage;
       this.getCourseList();
     },
-    getTeacherList(){
-      this.$http.get('admin/getTeacher').then(({data:res})=>{
-        if(res.status !== 200) {
-          return this.$message.error('获取老师列表失败');
+    getTeacherList() {
+      this.$http.get("admin/getTeacher").then(({ data: res }) => {
+        if (res.status !== 200) {
+          return this.$message.error("获取老师列表失败");
         } else {
           this.TeacherList = res.data;
         }
-      })
+      });
     },
     addCourse() {
       this.addDialog = true;
@@ -378,46 +378,49 @@ export default {
     },
     addStd(id) {
       this.course_id = id;
+      this.defCheckKeys = [];
+      this.defExpandKeys = [];
       this.$http
         .get("admin/getCourseStd", { params: { course_id: id } })
-        .then(({ data: res }) => {//获取已经在课程名单中的学生信息
+        .then(({ data: res }) => {
+          //获取已经在课程名单中的学生信息
           if (res.status !== 200) {
             return this.$message.error("该课程暂未添加学生");
           } else {
-            this.defCheckKeys = [];
-            this.defExpandKeys = [];
             res.data.map((item) => {
               this.defCheckKeys.push(item.student_id);
               this.defExpandKeys.push(item.student_id);
             });
           }
         });
-      this.$http.get("admin/getClassStd").then(({ data: res }) => {//获取所有学生信息
+      this.$http.get("admin/getClassStd").then(({ data: res }) => {
+        //获取所有学生信息
         if (res.status !== 200) {
           return this.$message("获取班级、学生列表失败");
         } else {
           this.ClassStdList = res.data;
         }
       });
-      this.addStdDialog = true;//打开弹窗
+      this.addStdDialog = true; //打开弹窗
     },
     closeAddStdDialog() {
       this.addStdDialog = false;
     },
     commitAddStdForm() {
-      const stdList = [...this.$refs.treeRef.getCheckedKeys()];//获取选中的el-tree当中的id（学号）
+      const stdList = [...this.$refs.treeRef.getCheckedKeys()]; //获取选中的el-tree当中的id（学号）
       if (stdList.length > 0) {
         this.$http
           .post("admin/addCourseStd", stdList, {
             params: { course_id: this.course_id },
           })
-          .then(({ data: res }) => {//向该课程添加学生
+          .then(({ data: res }) => {
+            //向该课程添加学生
             if (res.status !== 200) {
               return this.$message.error("修改课程学生失败");
             } else {
               this.$message.success("修改课程学生成功");
               this.addStdDialog = false;
-              this.getCourseList();//重新获取课程信息
+              this.getCourseList(); //重新获取课程信息
             }
           });
       }
@@ -476,10 +479,9 @@ export default {
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15) !important;
     .courseTable {
       margin-top: 30px;
-      .expand{
+      .expand {
         height: 196px;
-        .el-table{
-          
+        .el-table {
         }
       }
     }

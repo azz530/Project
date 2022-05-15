@@ -120,7 +120,7 @@
     </el-dialog>
 
     <el-dialog
-      title="班级信息"
+      title="修改班主任"
       :visible.sync="EditDialog"
       width="50%"
       @close="closeEditDialog"
@@ -201,6 +201,7 @@ export default {
     },
     checkClassInfo(id) {
       this.checkDialog = true;
+      this.class_id = id;
       this.getClassStd(id);
     },
     getTeacherList() {
